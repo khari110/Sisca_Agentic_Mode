@@ -1,0 +1,24 @@
+diff --git a/templates/index.html b/templates/index.html
+index efe94f8..50b29c9 100644
+--- a/templates/index.html
++++ b/templates/index.html
+@@ -2057,11 +2057,18 @@ function buildKeysSection(provider, keys, flash) {
+     if (list.length < cfg.max) {
+         const row = kEl('div', 'keys-row');
+         let input;
+-        if (provider === 'supabase') { input = document.createElement('input'); input.type = 'password'; }
++        if (provider === 'supabase') {
++            // type=password browser ka saved password autofill kar deta tha (copy/cut block). type=text + CSS masking use kiya.
++            input = document.createElement('input'); input.type = 'text';
++            input.name = 'sisca-supabase-conn-' + Date.now();
++            input.setAttribute('autocapitalize', 'off'); input.setAttribute('autocorrect', 'off');
++            input.setAttribute('data-lpignore', 'true'); input.setAttribute('data-1p-ignore', 'true'); input.setAttribute('data-form-type', 'other');
++        }
+         else { input = document.createElement('textarea'); input.rows = 2; }
+         input.className = 'keys-input';
+         input.placeholder = cfg.placeholder;
+         input.autocomplete = 'off'; input.spellcheck = false;
++        input.value = '';
+         const add = kEl('button', 'keys-add', 'Add'); add.type = 'button';
+         const doAdd = () => {
+             const val = input.value.trim();

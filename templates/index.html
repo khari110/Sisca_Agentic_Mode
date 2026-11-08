@@ -1,0 +1,2541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sisca AI - Your Autonomous Assistant</title>
+     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- NAYA: PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="icon" type="image/png" href="/static/sisca_logo.svg">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="mobile-blocker">
+        <img src="/static/sisca_logo.svg" alt="Sisca AI Logo" style="width: 80px; margin-bottom: 20px;">
+        <h1>Desktop Only Access</h1>
+        <p>Sisca AI is not accessable on mobile. For the full experience, please switch to <strong>Desktop</strong>.</p>
+    </div>
+
+    
+    <div class="background-blur">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+    </div>
+    
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebarToggle" class="sidebar-toggle-btn" type="button" title="Sisca menu" aria-label="Open menu" aria-expanded="false">
+        <img src="/static/sisca_logo.svg" alt="Sisca AI" class="sidebar-toggle-logo" draggable="false">
+    </button>
+
+    <!-- Left Sidebar -->
+    <div id="leftSidebar" class="glass-panel sidebar">
+        <!-- Header row: Sisca button (left, fixed) ke bilkul barabar X button (right) -->
+        <div class="sidebar-header">
+            <button id="closeSidebar" class="close-panel-btn sidebar-close-btn" type="button" title="Close menu" aria-label="Close menu">
+                <!-- Inline SVG: font glyph ki tarah box ke andar upar/neeche nahi khiskta, hamesha exact center -->
+                <svg class="sidebar-close-icon" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true" focusable="false"><path d="M1.5 1.5L8.5 8.5M8.5 1.5L1.5 8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </button>
+        </div>
+
+        <!-- Auth Section -->
+        <div class="sidebar-section auth-section">
+            <div class="auth-profile"><i class="fas fa-user"></i></div>
+            <div class="auth-text" id="currentUserDisplay">Guest Mode</div>
+            <div class="auth-panel-actions" id="loggedInActions" style="display: none; width: 100%;">
+                <button id="logoutBtn" style="width: 100%;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+            <div class="auth-buttons" id="authButtonsDiv" style="flex-direction: column; width: 100%;">
+                <button class="auth-btn signup-btn" id="openLoginModal"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <button class="auth-btn signup-btn" id="openSignupModal"><i class="fas fa-user-plus"></i> Sign Up</button>
+            </div>
+        </div>
+
+        <hr class="sidebar-divider">
+
+        <!-- Controls Section -->
+        <div class="sidebar-section">
+            <div class="control-grid" style="display: grid; grid-template-columns: 1fr 1fr; width: 100%; text-align: center;">
+                <div class="control-item" id="visualsBtn" title="Toggle Data Visualization" style="cursor: pointer; opacity: 1;">
+                    <i class="fas fa-toggle-off"></i><span>VISUALS</span>
+                </div>
+                <div class="control-item" id="connectGmailBtn" style="cursor: pointer; opacity: 1;" title="Connect Gmail">
+                    <i class="fas fa-envelope"></i><span>CONNECT</span>
+                </div>
+                <div class="control-item" id="feedbackBtn" style="cursor: pointer; opacity: 1;">
+                    <i class="fas fa-comment-alt"></i><span>FEEDBACK</span>
+                </div>
+                <div class="control-item" id="howToUseBtn" style="cursor: pointer; opacity: 1;">
+                    <i class="fas fa-question-circle"></i><span>GUIDE</span>
+                </div>
+                <div class="control-item" id="apiKeysBtn" title="Add your own API keys" style="cursor: pointer; opacity: 1; grid-column: 1 / -1;">
+                    <i class="fas fa-key"></i><span>API KEYS</span>
+                </div>
+            </div>
+        </div>
+
+        <hr class="sidebar-divider">
+
+        <!-- Neural Section -->
+        <div class="sidebar-section neural-section">
+            <div class="energy-core-wrapper" id="energy-core">
+                <div class="core-layer layer-1"></div>
+                <div class="core-layer layer-2"></div>
+                <div class="core-layer layer-3"></div>
+                <div class="core-center"></div>
+            </div>
+            <button type="button" id="talkBtn" class="init-btn" title="Toggle Voice Command" style="width: 100%;">Talk with SISCA</button>
+        </div>
+    </div>
+
+    <!-- New Solid Light Background -->
+    <div class="solid-light-bg"></div>
+
+    <div class="minimal-top-nav">
+    <div id="topAuthButtonsDiv" style="display: flex; gap: 10px;">
+        <button id="topOpenLoginModal" class="auth-btn signup-btn">Login</button>
+        <button id="topOpenSignupModal" class="auth-btn signup-btn">Sign Up</button>
+    </div>
+</div>
+
+    <!-- Main Centered Layout -->
+    <div class="centered-layout">
+        
+        <!-- Brand / Logo Area -->
+        <div class="brand-wrapper" id="brandWrapper" style="margin-bottom: 2rem;">
+            <img src="/static/sisca_logo.svg" alt="Sisca AI Logo" class="brand-logo" draggable="false" ondragstart="return false;" style="width: 100px; height: 100px;">
+            <h2 style="color: var(--text-dark); font-size: 2rem;" id="sisca-greeting"></h2>
+        </div>
+
+        <!-- Chat Area (Restricted Size) -->
+        <div class="chat-section-centered">
+            
+            <div class="chat-messages" id="chatMessages">
+                
+                 
+            </div>
+
+            <form id="chatForm" class="input-area-centered">
+                <div class="image-preview-area">
+                    <div id="imagePreviewContainer" style="display: none;">
+                        <img id="imagePreview" src="" alt="Preview">
+                        <button type="button" id="removeImageBtn" title="Remove image">&times;</button>
+                    </div>
+                </div>
+
+                <div class="input-container-pill shadow-pill">
+                    <input type="file" id="imageInput" accept="image/*, .csv, .xlsx, .json, .txt" style="display: none;">
+                    <button type="button" id="attachBtn" class="action-icon" title="Upload Image/Data">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <input type="text" id="messageInput" placeholder="Chat with Sisca AI..." autocomplete="off" required>
+                    
+                    <div class="audio-waveform" id="audioWaveform" style="display: none;">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    
+                    <div class="mode-selector-wrapper custom-select-wrapper">
+                        <div class="mode-selector custom-select-btn" id="customModeBtn">
+                            <span id="customModeText">Fast</span>
+                        </div>
+                        <i class="fas fa-chevron-down dropdown-icon"></i>
+                        <div class="custom-select-menu" id="customModeMenu">
+                            <div class="custom-option selected" data-value="fast">Fast</div>
+                            <div class="custom-option" data-value="research">Research</div>
+                        </div>
+                        <input type="hidden" id="chatModeSelector" value="fast">
+                    </div>
+
+                    <button type="submit" class="send-btn" id="sendBtn" title="Send Message">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button type="button" class="send-btn" id="stopBtn" title="Stop Generation" style="display: none; color: #ef4444;">
+                        <i class="fas fa-stop-circle"></i>
+                    </button>
+                </div>
+                
+                <div class="ai-disclaimer" style="margin-top: 15px;">
+                    SISCA AI is in <span class="ai-disclaimer-hl">Beta</span> phase. Use <strong id="disclaimerFeedbackBtn" class="ai-disclaimer-link" role="button" tabindex="0" title="Send feedback">Feedback</strong> button to report any error.
+                </div>
+            </form>
+        </div>
+
+        <!-- API Keys: main screen page (popup nahi). body.keys-page-open par chat chhup kar ye dikhta hai -->
+        <section id="apiKeysPage" class="keys-page" aria-labelledby="keysPageTitle">
+            <div class="keys-page-inner">
+                <div class="keys-page-head">
+                    <div>
+                        <h1 id="keysPageTitle"><i class="fas fa-key"></i> API Keys</h1>
+                        <p>Use Sisca with your own keys. Keys are kept only in this browser and are sent with your chat requests &mdash; they are not stored on the server. If you add no key for a provider, Sisca's default key is used.</p>
+                    </div>
+                    <button type="button" class="keys-back-btn" id="keysBackBtn"><i class="fas fa-arrow-left"></i> Back to chat</button>
+                </div>
+                <div class="keys-sections" id="keysSections"></div>
+                <button type="button" class="keys-remove-all" id="removeAllKeysBtn"><i class="fas fa-trash"></i> Remove all keys from this browser</button>
+            </div>
+        </section>
+
+        <!-- Hidden Document Overlay (Slides up for long reports/charts) -->
+        <div id="rightPanelContent" class="document-overlay">
+            <button id="closeRightPanel" class="close-panel-btn"><i class="fas fa-times"></i></button>
+            <button id="downloadPdfBtn" class="close-panel-btn" style="right: 4.5rem; background: var(--theme-primary); color: white;">
+                <i class="fas fa-file-pdf"></i>
+            </button>
+            <div id="rightPanelText" class="right-panel-text"></div>
+            <img id="rightPanelChart" src="" alt="Generated Chart" style="display: none; width: 100%; border-radius: 12px; margin-top: 15px;">
+        </div>
+
+        <!-- VNC Stream Overlay -->
+        <div id="virtualScreenContent" class="document-overlay side-panel" style="background: #ffffff; padding: 0; overflow: hidden; display: none;">
+            <div class="pc-header">
+                <span><i class="fas fa-desktop" style="margin-right: 5px;"></i> Sisca's PC Live</span>
+                <span class="pc-header-right">
+                    <span id="pcStatusBadge" class="pc-badge"><i class="pc-dot"></i><span id="pcStatusText">Starting</span></span>
+                    <button id="pcHideBtn" class="pc-hide-btn" type="button" title="Close Sisca's PC view" aria-label="Close Sisca's PC view" aria-expanded="true"><i class="fas fa-times"></i></button>
+                </span>
+            </div>
+
+            <!-- Stage: plain white top + 16:9 live screen + plain white bottom -->
+            <div class="pc-stage">
+                <div class="pc-zone pc-zone-top" aria-hidden="true"></div>
+
+                <!-- Screen: iframe + transparent shield. Shield (aur iframe par inert) user ke click/keys/scroll roktay hain,
+                     koi icon ya overlay nahi dikhta. "Take Control" dabane par shield hat jata hai. -->
+                <div class="pc-screen" id="pcScreen">
+                    <iframe id="vncStreamFrame" class="pc-frame" src="" title="Sisca's PC live screen" tabindex="-1" inert></iframe>
+                    <div id="pcShield" class="pc-shield"></div>
+                </div>
+
+                <div class="pc-zone pc-zone-bottom">
+                    <button id="pcControlBtn" class="pc-control-btn" type="button" aria-pressed="false">Take Control</button>
+                    <p id="pcControlHint" class="pc-control-hint">Sisca is working on this screen</p>
+                </div>
+            </div>
+
+            <!-- Loading screen: VNC ready hone tak raw noVNC ki jagah ye dikhta hai -->
+            <div id="pcLoader" class="pc-loader" role="status" aria-live="polite">
+                <div class="pc-loader-inner">
+                    <div class="pc-orb" aria-hidden="true"><span></span><span></span><span></span><i class="fas fa-desktop"></i></div>
+                    <h3 id="pcLoaderTitle">Booting Sisca's PC&hellip;</h3>
+                    <p id="pcLoaderSub">A private browser is being set up for You</p>
+                    <ol class="pc-stages" id="pcStages">
+                        <li><i class="fas fa-check"></i><span>Request received</span></li>
+                        <li><i class="fas fa-check"></i><span>Starting virtual PC</span></li>
+                        <li><i class="fas fa-check"></i><span>Opening browser</span></li>
+                        <li><i class="fas fa-check"></i><span>Connecting live screen</span></li>
+                    </ol>
+                    <div id="pcTip" class="pc-tip" aria-hidden="true"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Default brand panel: jab right panel me kuch na ho to ye dikhta hai -->
+        <div id="brandPanel" class="document-overlay side-panel idle-brand-panel" aria-label="Nothing to Show">
+            <div class="idle-scene" aria-hidden="true">
+                <div class="idle-bubble">
+                    <svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Nothing to Show Bubble">
+                        <!-- Wider Rectangular Cloud Shape -->
+                        <path d="M 20,40 
+                                 C 10,40 10,25 20,25 
+                                 C 25,10 40,10 50,15 
+                                 C 60,5 85,5 95,15 
+                                 C 105,10 115,20 115,30 
+                                 C 125,35 120,50 110,50 
+                                 C 105,65 80,65 70,55 
+                                 C 60,65 40,65 30,55 
+                                 C 25,60 15,60 20,40 Z" 
+                              fill="#ffffff" stroke="rgba(30,158,137,0.45)" stroke-width="1.5" stroke-linejoin="round"/>
+                              
+                        <!-- Thought bubbles (Tail) pointing towards robot -->
+                        <circle cx="75" cy="65" r="4.5" fill="#ffffff" stroke="rgba(30,158,137,0.45)" stroke-width="1.5"/>
+                        <circle cx="82" cy="73" r="2" fill="#ffffff" stroke="rgba(30,158,137,0.45)" stroke-width="1.5"/>
+                        
+                        <!-- Text inside cloud -->
+                        <text x="68" y="42" font-family="Inter, Arial, sans-serif" font-weight="550" font-size="8.2" text-anchor="middle" fill="#1f2937">
+                            NOTHING TO SHOW
+                        </text>
+                    </svg>
+                </div>
+                <svg class="idle-robot" viewBox="0 60 380 125" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Robot relaxing">
+                    <!-- floor -->
+                    <ellipse cx="190" cy="170" rx="165" ry="6" fill="rgba(30,158,137,0.14)"/>
+                    <line x1="14" y1="166" x2="366" y2="166" stroke="rgba(69,90,100,0.18)" stroke-width="2" stroke-linecap="round"/>
+
+                    <!-- floating z z z -->
+                    <g class="idle-z" transform="translate(26 0)" fill="#1e9e89" font-family="Inter, Arial, sans-serif" font-weight="800">
+                        <text x="132" y="104" font-size="15">z</text>
+                        <text x="146" y="90" font-size="19" style="animation-delay:.8s">z</text>
+                        <text x="162" y="74" font-size="23" style="animation-delay:1.6s">Z</text>
+                    </g>
+
+                    <!-- straight leg (on the floor) -->
+                    <line x1="222" y1="152" x2="296" y2="152" stroke="#178270" stroke-width="14" stroke-linecap="round"/>
+                    <ellipse cx="303" cy="152" rx="8" ry="11" fill="#1e9e89"/>
+
+                    <!-- both arms folded under the head (relax / chill mode) -->
+                    <polyline points="140,126 120,95 85,145" fill="none" stroke="#178270" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+                    
+
+                    <!-- torso -->
+                    <g class="idle-breath">
+                        <rect x="118" y="120" width="112" height="42" rx="17" fill="#1e9e89"/>
+                        <rect x="172" y="128" width="30" height="9" rx="4.5" fill="#e9f7f4"/>
+                    </g>
+
+                    <polyline points="136,155 106,173 105,148" fill="none" stroke="#178270" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+                    <!-- crossed leg: knee up, foot on the ground (shoe taps slowly) -->
+                    <line x1="224" y1="138" x2="258" y2="106" stroke="#178270" stroke-width="13" stroke-linecap="round"/>
+                    <line x1="258" y1="106" x2="276" y2="150" stroke="#178270" stroke-width="13" stroke-linecap="round"/>
+                    <g class="idle-foot">
+                        <ellipse cx="279" cy="152" rx="8" ry="11" fill="#1e9e89"/>
+                    </g>
+                    
+                    <!-- head raised slightly higher resting comfortably on hands -->
+                    <g transform="translate(6 -8) rotate(-88 95 139)">
+                        <line x1="94" y1="114" x2="88" y2="96" stroke="#178270" stroke-width="3.5" stroke-linecap="round"/>
+                        <circle cx="87" cy="94" r="5" fill="#1e9e89"/>
+                        <rect x="58" y="130" width="9" height="16" rx="3.5" fill="#178270"/>
+                        <rect x="66" y="114" width="58" height="50" rx="15" fill="#1e9e89"/>
+                        <rect x="72" y="121" width="46" height="36" rx="10" fill="#e9f7f4"/>
+                        <path d="M81 136 q5.5 5.5 11 0" fill="none" stroke="#1f2d2b" stroke-width="2.4" stroke-linecap="round"/>
+                        <path d="M98 136 q5.5 5.5 11 0" fill="none" stroke="#1f2d2b" stroke-width="2.4" stroke-linecap="round"/>
+                        <path d="M89 146 q6 5 12 0" fill="none" stroke="#1f2d2b" stroke-width="2.2" stroke-linecap="round"/>
+                        <circle cx="79" cy="146" r="3" fill="#1e9e89" opacity=".35"/>
+                        <circle cx="111" cy="146" r="3" fill="#1e9e89" opacity=".35"/>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Drag handle: right panel ki width drag karke set karein (double-click = reset) -->
+        <div id="panelResizer" class="panel-resizer" role="separator" aria-orientation="vertical" aria-label="Resize side panel" title="Drag to resize (double-click to reset)" tabindex="0"></div>
+
+        <!-- Hamesha visible, transparent toggle (top-right): right panel open/close -->
+        <button id="panelToggleBtn" class="panel-toggle-btn" type="button" title="Toggle side panel" aria-label="Toggle side panel" aria-expanded="false">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2.5"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+        </button>
+        
+    </div>
+
+    </div> 
+      
+    
+<!-- =====================================
+         GUEST 10 MESSAGES LIMIT MODAL
+    ====================================== -->
+    <div id="guestLimitModal" class="modal">
+        <div class="modal-content" style="text-align: center; max-width: 400px;">
+            <span class="close-btn" onclick="smoothClose(document.getElementById('guestLimitModal'))">&times;</span>
+            
+            <h2 style="color: var(--text-dark); margin-bottom: 0.5rem;">Daily Limit Reached</h2>
+            <p style="color: var(--theme-secondary); line-height: 1.5; margin-bottom: 1.5rem;">
+                You've reached your free limit of 10 messages for today.<br><br>
+                Please <strong>Login</strong> or <strong>Sign Up</strong> to unlock unlimited free conversations!
+            </p>
+            <div style="display: flex; gap: 10px;">
+                <button class="modal-submit-btn" onclick="window.location.href='/auth'" style="flex: 1; margin-top: 0;">Login</button>
+                <button class="modal-submit-btn" onclick="window.location.href='/auth?mode=signup'" style="flex: 1;">Sign Up Free</button>
+            </div>
+        </div>
+    </div>
+
+<!-- =====================================
+         GUEST 5 MESSAGES WARNING MODAL
+    ====================================== -->
+    <div id="guestWarningModal" class="modal">
+        <div class="modal-content" style="text-align: center; max-width: 400px;">
+            <span class="close-btn" onclick="smoothClose(document.getElementById('guestWarningModal'))">&times;</span>       
+            <h2 style="color: var(--text-dark); margin-bottom: 0.5rem;">5 Messages Left!</h2>
+            <p style="color: var(--theme-secondary); line-height: 1.5; margin-bottom: 1.5rem;">
+                You have only 5 free messages left for today.<br><br>
+                Please <strong>Login</strong> or <strong>Sign Up</strong> now to unlock unlimited free conversations and save your progress!
+            </p>
+            <div style="display: flex; gap: 10px;">
+                <button class="modal-submit-btn" onclick="window.location.href='/auth'" style="flex: 1; margin-top: 0;">Login</button>
+                <button class="modal-submit-btn" onclick="window.location.href='/auth?mode=signup'" style="flex: 1;">Sign Up Free</button>
+            </div>
+        </div>
+    </div>
+
+
+
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeLogin">&times;</span>
+        <h2>Login to Sisca AI</h2>
+        <input type="email" id="loginEmail" placeholder="Email Address" class="auth-input">
+        
+        <div class="password-wrapper">
+            <input type="password" id="loginPassword" placeholder="Password" class="auth-input" style="margin-bottom: 0;">
+            <i class="fas fa-eye toggle-password" id="toggleLoginPassword"></i>
+        </div>
+        
+        <button class="modal-submit-btn" onclick="submitLogin()" style="margin-top: 1rem;">Login</button>
+    </div>
+</div>
+
+<div id="signupModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeSignup">&times;</span>
+        <h2>Create Account</h2>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+            <input type="text" id="signupFirstName" placeholder="First Name" class="auth-input" style="margin-bottom: 0;">
+            <input type="text" id="signupLastName" placeholder="Last Name" class="auth-input" style="margin-bottom: 0;">
+        </div>
+        
+        <input type="email" id="signupEmail" placeholder="Email Address" class="auth-input">
+        
+        <div class="password-wrapper">
+            <input type="password" id="signupPassword" placeholder="Create a Password" class="auth-input" style="margin-bottom: 0;">
+            <i class="fas fa-eye toggle-password" id="toggleSignupPassword"></i>
+        </div>
+       <p style="font-size: 0.75rem; color: var(--theme-secondary); margin-bottom: 1rem; margin-top: 0.5rem; text-align: center;">
+    Password must have 1 uppercase, 1 lowercase & 1 number.
+        </p>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+            <input type="text" id="signupOTP" placeholder="Enter 6-digit Code" class="auth-input" maxlength="6" style="margin-bottom: 0; flex: 1;">
+            <button class="init-btn" id="sendOtpBtn" onclick="requestOTP()" style="margin-top: 0; white-space: nowrap; border-radius: 12px;">Send Code</button>
+        </div>
+
+        <button class="modal-submit-btn" onclick="submitSignup()">Sign Up</button>
+    </div>
+</div>
+
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeFeedback">&times;</span>
+        <h2>Anonymous Feedback</h2>
+        <p>Your feedback helps us improve Sisca AI. (No personal data is collected during feedback submission)</p>
+        <textarea id="feedbackText" rows="4" placeholder="Write your feedback here..."></textarea>
+        <button class="modal-submit-btn" onclick="submitFeedback()">Submit Feedback</button>
+    </div>
+</div>
+
+<div id="howToUseModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <span class="close-btn" id="closeHowToUse">&times;</span>
+        <h2>How to Use Sisca AI</h2>
+        <ul class="instructions-list" style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
+            <li><strong><i class="fas fa-microphone"></i> Voice Command:</strong> Click <strong>Talk with SISCA</strong> and speak your command.</li>
+            <li><strong><i class="fas fa-envelope"></i> Gmail Integration:</strong> Connect your Gmail to let Sisca read, summarize, and send emails for you.</li>
+            <li><strong><i class="fas fa-image"></i> Image Analysis:</strong> Click the paperclip icon to upload an image and ask questions about it.</li>
+            <li><strong><i class="fas fa-globe"></i> Web Access:</strong> Using <strong>Research Mode</strong>, you can browse the web and perform searches in real-time.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="connectModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeConnect">&times;</span>
+        <h2>Integration (Beta)</h2>
+        <p style="margin-bottom: 1.5rem; line-height: 1.6; color: var(--theme-secondary); font-size: 0.95rem;">
+            Since Sisca AI is currently in Beta, the Gmail Integration feature is restricted to Test Users.<br><br>
+            To get access, click <strong>'Apply for Test User'</strong> below.<br> Once your request is approved, you can click <strong>'Connect'</strong> button to link your account.
+        </p>
+        
+       <style>
+            /* NAYA: Dono buttons par same Google jaisi CSS lagayen */
+            #actualConnectBtn, #requestTestUserBtn {
+                background: #ffffff;
+                color: #3c4043;
+                border: 1px solid #dadce0;
+                border-radius: 8px;
+                height: 44px; 
+                font-size: 0.95rem;
+                font-weight: 700;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                transition: background-color 0.2s, box-shadow 0.2s;
+            }
+            #actualConnectBtn:hover:not(:disabled), #requestTestUserBtn:hover:not(:disabled) {
+                background-color: #f8f9fa;
+                box-shadow: 0 1px 3px rgba(60,64,67,0.2);
+            }
+        </style>
+
+        <div style="display: flex; gap: 10px; margin-top: 1rem;">
+            <button id="requestTestUserBtn" style="flex: 1;">
+                Apply for Test User
+            </button>
+            
+            <button id="actualConnectBtn" style="margin-top: 0; flex: 1; height: 44px;">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.7 17.66 9.5 24 9.5z"></path>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                    <path fill="none" d="M0 0h48v48H0z"></path>
+                </svg>
+                Connect
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+// ==========================================
+// SIDEBAR TOGGLE LOGIC
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('leftSidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const closeSidebar = document.getElementById('closeSidebar');
+
+    // Hover = temporary open, hover + click = pinned (sirf X se band hoga)
+    let pinned = false;
+    let closeTimer = null;
+    const CLOSE_DELAY_MS = 250;   // button se sidebar tak mouse jaane ka chhota gap
+
+    function setOpen(open) {
+        sidebar.classList.toggle('open', open);
+        sidebarToggle.setAttribute('aria-expanded', String(open));
+    }
+    // Logo ka light-green box: hover par CSS khud dikhata hai; click (pinned) ke baad .active se tika rehta hai
+    function setPinned(value) {
+        pinned = value;
+        sidebarToggle.classList.toggle('active', value);
+    }
+    function cancelClose() { clearTimeout(closeTimer); closeTimer = null; }
+    function scheduleClose() {
+        if (pinned) return;
+        cancelClose();
+        closeTimer = setTimeout(() => { if (!pinned) setOpen(false); }, CLOSE_DELAY_MS);
+    }
+
+    sidebarToggle.addEventListener('mouseenter', () => { cancelClose(); setOpen(true); });
+    sidebarToggle.addEventListener('mouseleave', scheduleClose);
+    sidebar.addEventListener('mouseenter', cancelClose);
+    sidebar.addEventListener('mouseleave', scheduleClose);
+
+    // Click: pin kar do (touch devices par bhi yahi open karta hai)
+    sidebarToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setPinned(true);
+        cancelClose();
+        setOpen(true);
+    });
+
+    // Close sidebar (Cross Button) - pinned state bhi hat jati hai
+    closeSidebar.addEventListener('click', () => {
+        setPinned(false);
+        cancelClose();
+        setOpen(false);
+    });
+});  
+  
+        // === CUSTOM DROPDOWN LOGIC ===
+document.addEventListener('DOMContentLoaded', () => {
+    const customModeBtn = document.getElementById('customModeBtn');
+    const customModeMenu = document.getElementById('customModeMenu');
+    const customModeText = document.getElementById('customModeText');
+    const hiddenInput = document.getElementById('chatModeSelector');
+    const customOptions = document.querySelectorAll('.custom-option');
+
+    if(customModeBtn && customModeMenu) {
+        // Dropdown toggle karein
+        customModeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            customModeMenu.classList.toggle('show');
+        });
+
+        // Option select karne par
+        customOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const value = option.getAttribute('data-value');
+                const text = option.innerText;
+
+                // UI aur hidden input update karein
+                customModeText.innerText = text;
+                hiddenInput.value = value;
+
+                // Selection highlight change karein
+                customOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+
+                // Menu close karein
+                customModeMenu.classList.remove('show');
+            });
+        });
+
+        // Agar user bahar click kare to menu close ho jaye
+        document.addEventListener('click', (e) => {
+            if (!customModeBtn.contains(e.target) && !customModeMenu.contains(e.target)) {
+                customModeMenu.classList.remove('show');
+            }
+        });
+    }
+});
+
+// ====== CUSTOM NOTIFICATION SYSTEM ======
+        function showNotification(message, type = 'info') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `custom-toast ${type}`;
+            
+            let iconClass = 'fas fa-info-circle';
+            if (type === 'success') iconClass = 'fas fa-check-circle';
+            if (type === 'error') iconClass = 'fas fa-exclamation-circle';
+
+            // Agar message me emoji ho to usay clean kar dega
+            let cleanMessage = message.replace('⚠️ ', '');
+
+            toast.innerHTML = `<i class="${iconClass}"></i> <span>${cleanMessage}</span>`;
+            container.appendChild(toast);
+
+            // 4 seconds ke baad slide-out karke remove ho jayega
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+// === UNIVERSAL MODAL CLOSE ANIMATION ===
+        function smoothClose(modalElement) {
+            if (!modalElement) return;
+            const content = modalElement.querySelector('.modal-content');
+            
+            // 1. Closing animation class lagayen
+            content.classList.add('modal-closing');
+            
+            // 2. 200 miliseconds (0.20s) ka wait karein aur phir hide karein
+            setTimeout(() => {
+                modalElement.style.display = 'none';
+                content.classList.remove('modal-closing'); // Agli dafa khulne ke liye reset
+            }, 155);
+        }
+        // === CLOSE MODAL ON OUTSIDE CLICK ===
+        // Agar user dark background par click karega toh popup band ho jayega
+        window.addEventListener('click', function(event) {
+            // Check karein ke jis jagah click hua hai, kya wo 'modal' (dark overlay) hai?
+            if (event.target.classList.contains('modal')) {
+                smoothClose(event.target);
+            }
+        });
+
+
+        // Default browser alert ko Override kar diya
+        window.alert = function(msg) {
+            let msgStr = String(msg);
+            let type = 'info';
+            let lowerMsg = msgStr.toLowerCase();
+            
+            // AI khud pehchan legi ke message Error ka hai ya Success ka
+            if (lowerMsg.includes('error') || lowerMsg.includes('failed') || lowerMsg.includes('invalid') || lowerMsg.includes('empty') || lowerMsg.includes('please login') || msgStr.includes('⚠️')) {
+                type = 'error';
+            } else if (lowerMsg.includes('success') || lowerMsg.includes('thank you') || lowerMsg.includes('awesome')) {
+                type = 'success';
+            }
+            
+            showNotification(msgStr, type);
+        };
+        // ========================================
+
+// === VISUALS BUTTON TOGGLE LOGIC ===
+const visualsBtn = document.getElementById('visualsBtn');
+let isVisualizeModeOn = false;
+
+if (visualsBtn) {
+    visualsBtn.addEventListener('click', () => {
+        isVisualizeModeOn = !isVisualizeModeOn;
+        const icon = visualsBtn.querySelector('i');
+        
+        if (isVisualizeModeOn) {
+            visualsBtn.classList.add('visuals-active');
+            icon.classList.remove('fa-toggle-off');
+            icon.classList.add('fa-toggle-on');
+        } else {
+            visualsBtn.classList.remove('visuals-active');
+            icon.classList.remove('fa-toggle-on');
+            icon.classList.add('fa-toggle-off');
+        }
+    });
+}
+
+ // ====== PAGE LOAD LOGIC ======
+window.addEventListener('DOMContentLoaded', async () => {
+    const savedUserStr = localStorage.getItem('sisca_user');
+    const authProfileIcon = document.querySelector('.auth-profile');
+    const gmailBtn = document.getElementById('connectGmailBtn');
+    
+    // Icon hamesha show rahega
+    if (gmailBtn) gmailBtn.style.display = 'flex'; 
+
+    if (savedUserStr) {
+        const user = JSON.parse(savedUserStr);
+        document.getElementById('currentUserDisplay').innerText = `${user.first_name} ${user.last_name}`;
+        document.getElementById('authButtonsDiv').style.display = 'none';
+        document.getElementById('topAuthButtonsDiv').style.display = 'none';
+        
+        const loggedInActions = document.getElementById('loggedInActions');
+        if (loggedInActions) loggedInActions.style.display = 'flex';
+        
+        if (authProfileIcon) authProfileIcon.classList.add('logged-in'); 
+        
+        // === NAYA LOGIC: Page load hoty hi Connect Popup ka data ready kar lega ===
+        checkConnectButtonStatus();
+        
+        // NAYA LOGIC: Page load hoty hi direct Database se live check karega
+        try {
+            const response = await fetch('/api/check-status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: user.email })
+            });
+            const data = await response.json();
+            
+            // Agar database ne confirm kar diya ke token mojood hai, to button ko Connected kar do
+            if (data.gmail_connected && gmailBtn) {
+                gmailBtn.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i><span style="color: #10b981;">CONNECTED</span>';
+                gmailBtn.classList.add('connected-state');
+                gmailBtn.disabled = true;
+                
+                // Backup ke liye browser ki memory me bhi update kar dein
+                user.gmail_connected = true;
+                localStorage.setItem('sisca_user', JSON.stringify(user));
+            }
+        } catch (e) {
+            console.error("Status fetch failed", e);
+        }
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('gmail_connected')) {
+        alert("Awesome! Gmail Connected Successfully. Sisca AI can now send emails for you.");
+        
+        if (savedUserStr) {
+            const user = JSON.parse(savedUserStr);
+            user.gmail_connected = true;
+            localStorage.setItem('sisca_user', JSON.stringify(user));
+            
+            if (gmailBtn) {
+                gmailBtn.innerHTML = '<i class="fas fa-check-circle" style="color: #10b981;"></i><span style="color: #10b981;">CONNECTED</span>';
+                gmailBtn.classList.add('connected-state');
+                gmailBtn.disabled = true;
+            }
+        }
+        window.history.replaceState({}, document.title, "/"); 
+    }
+});
+
+// ====== LOGOUT LOGIC ======
+async function handleLogout() {
+    
+    // ==========================================
+    // NAYA: Abort any pending requests immediately upon logout
+    // ==========================================
+    if (typeof currentAbortController !== 'undefined' && currentAbortController !== null) {
+        currentAbortController.abort();
+        console.log("Pending request aborted due to logout.");
+    }
+
+    // Frontend se user ka data hata rahe hain
+    localStorage.removeItem('sisca_user');
+
+    document.getElementById('currentUserDisplay').innerText = 'Guest Mode';
+    document.getElementById('authButtonsDiv').style.display = 'flex';
+    document.getElementById('topAuthButtonsDiv').style.display = 'flex';
+    
+    const loggedInActions = document.getElementById('loggedInActions');
+    if (loggedInActions) loggedInActions.style.display = 'none';
+    
+    const authProfileIcon = document.querySelector('.auth-profile');
+    if (authProfileIcon) authProfileIcon.classList.remove('logged-in');
+    
+    const gmailBtn = document.getElementById('connectGmailBtn');
+    if (gmailBtn) {
+        gmailBtn.innerHTML = '<i class="fas fa-envelope"></i><span>CONNECT</span>';
+        gmailBtn.classList.remove('connected-state');
+        gmailBtn.disabled = false;
+        gmailBtn.style.display = 'flex'; 
+    }
+
+    // Frontend chatbox ko clear karke default welcome message lagana
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.innerHTML = `
+            <div class="message assistant-message">
+                <div class="message-avatar">
+                    <a href="https://siscaai.online" target="_blank" onclick="event.preventDefault();" style="cursor: default; display: flex;">
+                        <img src="/static/sisca_logo.svg" alt="Sisca AI" draggable="false">
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+
+    // NAYA LOGIC: Logout par logo wapas animation k sath show kar do
+    const topBrandWrapper = document.getElementById('brandWrapper');
+    if (topBrandWrapper) {
+        topBrandWrapper.style.display = 'flex'; // Pehle layout mein jagah wapas layein
+        
+        // Halka sa delay de kar show-tech class apply karein taake animation smoothly chale
+        setTimeout(() => {
+            topBrandWrapper.classList.remove('hide-tech');
+            topBrandWrapper.classList.add('show-tech');
+        }, 50); 
+    }
+    const rightPanelContent = document.getElementById('rightPanelContent');
+    const brandWrapper = document.getElementById('brandWrapper');
+    if (rightPanelContent && rightPanelContent.classList.contains('show')) {
+        rightPanelContent.classList.remove('show');
+        brandWrapper.classList.remove('hide-tech');
+        brandWrapper.classList.add('show-tech');
+    }
+
+    // BUG FIX: Ab yahan user_email ki jagah explicitly "guest" likh diya hai.
+    // Is se logged-in user ki history save rahegi aur sirf guest data clear hoga.
+    try {
+        await fetch('/api/clear-chat', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_email: "guest" }) 
+        });
+    } catch (e) {
+        console.error("Failed to clear backend chat memory.");
+    }
+
+    alert('Logged out successfully!');
+}
+document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+
+// ====== CONNECT GMAIL MODAL LOGIC ======
+const connectModal = document.getElementById('connectModal');
+const closeConnect = document.getElementById('closeConnect');
+const actualConnectBtn = document.getElementById('actualConnectBtn');
+const requestTestUserBtn = document.getElementById('requestTestUserBtn');
+
+// NAYA LOGIC: Ab ye direct backend se live status check karega
+async function checkConnectButtonStatus() {
+    const savedUserStr = localStorage.getItem('sisca_user');
+    if (!savedUserStr) return;
+    const savedUser = JSON.parse(savedUserStr);
+    
+    try {
+        const response = await fetch('/api/check-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: savedUser.email })
+        });
+        const data = await response.json();
+        const status = data.test_status; // 0 = New, 1 = Requested, 2 = Approved
+
+        if (status === 2) {
+            // Approved state
+            actualConnectBtn.disabled = false;
+            actualConnectBtn.style.opacity = "1";
+            actualConnectBtn.style.cursor = "pointer";
+            actualConnectBtn.style.pointerEvents = "auto";
+            
+            requestTestUserBtn.innerText = "Added to Test Users";
+            requestTestUserBtn.disabled = false; // Disable tag hata diya
+            requestTestUserBtn.style.pointerEvents = "none"; // NAYA: Hover aur Click bilkul band
+            requestTestUserBtn.style.background = "rgba(16, 185, 129, 0.1)"; 
+            requestTestUserBtn.style.color = "#10b981";
+            requestTestUserBtn.style.border = "1px solid rgba(16, 185, 129, 0.3)";
+        } else if (status === 1) {
+            // Requested / Pending state
+            actualConnectBtn.disabled = true;
+            actualConnectBtn.style.opacity = "0.5";
+            actualConnectBtn.style.cursor = "not-allowed";
+            actualConnectBtn.style.pointerEvents = "none";
+            
+            requestTestUserBtn.innerText = "Request Pending..."; // TEXT CHANGED
+            requestTestUserBtn.disabled = false; // Disable tag hata diya
+            requestTestUserBtn.style.pointerEvents = "none"; // NAYA: Hover aur Click bilkul band
+            requestTestUserBtn.style.background = "rgba(245, 158, 11, 0.1)"; 
+            requestTestUserBtn.style.color = "#f59e0b";
+            requestTestUserBtn.style.border = "1px solid rgba(245, 158, 11, 0.3)";
+        } else {
+            // Normal state
+            actualConnectBtn.disabled = true;
+            actualConnectBtn.style.opacity = "0.5";
+            actualConnectBtn.style.cursor = "not-allowed";
+            actualConnectBtn.style.pointerEvents = "none";
+            
+            // BUG FIX: Normal state mein wapas original design par layein
+            requestTestUserBtn.innerText = "Apply for Test User";
+            requestTestUserBtn.disabled = false;
+            requestTestUserBtn.style.pointerEvents = "auto"; 
+            requestTestUserBtn.style.background = "#ffffff";
+            requestTestUserBtn.style.color = "#3c4043";
+            requestTestUserBtn.style.border = "1px solid #dadce0";
+        }
+    } catch (e) {
+        console.error("Status fetch failed", e);
+    }
+}
+
+// Grid icon par click karne se popup open hoga
+document.getElementById('connectGmailBtn').addEventListener('click', () => {
+    const savedUser = localStorage.getItem('sisca_user');
+    if (!savedUser) {
+        alert("Please Login to access Integration features."); 
+        return;
+    }
+    
+    // Popup fauran open hoga, aur ab buttons pehle se loaded honge!
+    connectModal.style.display = 'flex';
+});
+
+closeConnect.addEventListener('click', () => smoothClose(connectModal));
+
+actualConnectBtn.addEventListener('click', () => {
+    if(actualConnectBtn.disabled) return;
+    const savedUser = JSON.parse(localStorage.getItem('sisca_user'));
+    window.location.href = '/authorize?email=' + encodeURIComponent(savedUser.email);
+});
+
+// Request Button Click Logic
+requestTestUserBtn.addEventListener('click', async () => {
+    const savedUserStr = localStorage.getItem('sisca_user');
+    if (!savedUserStr) return;
+    const savedUser = JSON.parse(savedUserStr);
+    
+    const btn = document.getElementById('requestTestUserBtn');
+    const originalText = btn.innerText;
+    
+    btn.innerText = "Requesting...";
+    btn.style.pointerEvents = "none"; // Request bhejte waqt double click se roko
+
+    try {
+        await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                text: `TEST USER REQUEST: Please add this email to Google Cloud Test Users list: ${savedUser.email}`,
+                user_email: savedUser.email
+            })
+        });
+        
+        alert("Request sent successfully! As soon as it is approved, you can Connect your Account.");
+        
+        // Fauran Button ko "Requested" state me change kar do
+        btn.innerText = "Request Pending..."; // TEXT CHANGED
+        btn.style.pointerEvents = "none"; // Hover aur click band
+        btn.style.background = "rgba(245, 158, 11, 0.1)"; 
+        btn.style.color = "#f59e0b";
+        btn.style.border = "1px solid rgba(245, 158, 11, 0.3)";
+        
+    } catch (error) {
+        alert("Request failed. Please try again.");
+        btn.innerText = originalText;
+        btn.style.pointerEvents = "auto"; // Agar error aaye toh wapas clickable kar do
+    } 
+});
+
+ // Auth Modals Logic
+const loginModal = document.getElementById('loginModal');
+const signupModal = document.getElementById('signupModal');
+
+// ====== REDIRECT TO AUTH PAGE ======
+['openLoginModal', 'topOpenLoginModal'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', () => { window.location.href = '/auth'; });
+});
+
+['openSignupModal', 'topOpenSignupModal'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', () => { window.location.href = '/auth?mode=signup'; });
+});
+document.getElementById('closeLogin').addEventListener('click', () => smoothClose(loginModal));
+document.getElementById('closeSignup').addEventListener('click', () => smoothClose(signupModal));
+
+// Eye Button Toggle Logic
+function setupPasswordToggle(toggleId, inputId) {
+    const toggleBtn = document.getElementById(toggleId);
+    const passInput = document.getElementById(inputId);
+    
+    toggleBtn.addEventListener('click', function () {
+        const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash'); // Icon change (eye to eye-slash)
+    });
+}
+setupPasswordToggle('toggleSignupPassword', 'signupPassword');
+setupPasswordToggle('toggleLoginPassword', 'loginPassword');
+
+async function requestOTP() {
+    const email = document.getElementById('signupEmail').value;
+    const btn = document.getElementById('sendOtpBtn');
+
+    if (!email) {
+        return alert("Please enter your email address first!");
+    }
+
+    // Button ko loading state mein daalein
+    btn.innerText = "Sending...";
+    btn.disabled = true;
+
+    try {
+        const res = await fetch('/api/send-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+        });
+        const data = await res.json();
+
+        if (data.error) {
+            alert(data.error);
+            btn.innerText = "Send Code";
+            btn.disabled = false;
+        } else {
+            alert(data.message);
+            
+            // --- NAYA: 30 Seconds Timer Logic ---
+            let timeLeft = 30;
+            btn.innerText = `Resend in ${timeLeft}s`;
+            
+            const timerId = setInterval(() => {
+                timeLeft--;
+                btn.innerText = `Resend in ${timeLeft}s`;
+                
+                // Jab timer 0 ho jaye to interval khatam kar dein
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    btn.innerText = "Resend Code";
+                    btn.disabled = false; // Button wapas clickable ho jayega
+                }
+            }, 1000); // 1000 milliseconds = 1 second
+            // ------------------------------------
+        }
+    } catch (error) {
+        alert("Network error while sending OTP.");
+        btn.innerText = "Send Code";
+        btn.disabled = false;
+    }
+}
+
+async function submitSignup() {
+    const firstName = document.getElementById('signupFirstName').value;
+    const lastName = document.getElementById('signupLastName').value;
+    const email = document.getElementById('signupEmail').value;
+    const otp = document.getElementById('signupOTP').value; // OTP Field
+    const pass = document.getElementById('signupPassword').value;
+    
+    if(!firstName || !lastName || !email || !pass || !otp) return alert("Please fill all fields including OTP!");
+
+    const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            first_name: firstName, 
+            last_name: lastName, 
+            email: email, 
+            otp: otp, // Backend ko OTP bheja
+            password: pass 
+        })
+    });
+    const data = await res.json();
+    
+    if(data.error) alert(data.error);
+    else {
+        alert(data.message);
+        signupModal.style.display = 'none';
+        loginModal.style.display = 'flex';
+        // Reset fields
+        document.getElementById('signupOTP').value = "";
+        document.getElementById('sendOtpBtn').innerText = "Send Code";
+        document.getElementById('sendOtpBtn').disabled = false;
+    }
+}
+
+async function submitLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPassword').value;
+
+            if(!email || !pass) return alert("Please fill all fields!");
+
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password: pass })
+            });
+
+            const data = await res.json();
+            
+            if(data.error) alert(data.error);
+            else {
+                // IMPORTANT: Login hoty hi user ka data browser me save ho jayega aur homepage par redirect ho jayega
+                localStorage.setItem('sisca_user', JSON.stringify({
+                    first_name: data.first_name,
+                    last_name: data.last_name,
+                    email: data.email
+                }));
+
+                localStorage.setItem("first_name", data.first_name);
+
+                window.location.href = '/'; 
+            }
+        }
+
+const chatForm = document.getElementById('chatForm');
+        const messageInput = document.getElementById('messageInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const attachBtn = document.getElementById('attachBtn');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const talkBtn = document.getElementById('talkBtn');
+        const audioWaveform = document.getElementById('audioWaveform');
+
+        let selectedImageBase64 = null;
+        let selectedDataFile = null; // NAYA: Data File Tracker
+        
+        window.fillAndSubmit = function(text) {
+            messageInput.value = text;
+            chatForm.dispatchEvent(new Event('submit'));
+        };
+        attachBtn.addEventListener('click', () => { imageInput.click(); });
+        
+        imageInput.addEventListener('change', async function() {
+            const file = this.files[0];
+            if (!file) return;
+            
+            // Image Workflow
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imagePreview.src = event.target.result;
+                    imagePreviewContainer.style.display = 'block';
+                    selectedImageBase64 = event.target.result.split(',')[1];
+                    messageInput.removeAttribute('required');
+                };
+                reader.readAsDataURL(file);
+            } 
+            // Data Sandbox Workflow
+            else {
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                messageInput.value = "Uploading data file...";
+                messageInput.disabled = true;
+                
+                try {
+                    const res = await fetch('/api/upload-data', { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (data.success) {
+                        selectedDataFile = data.filename;
+                        messageInput.value = "";
+                        messageInput.disabled = false;
+                        messageInput.placeholder = `Data Loaded: ${file.name}. Ask to visualize...`;
+                        messageInput.removeAttribute('required');
+                        
+                        // Visual cue for file attached
+                        imagePreview.src = "https://cdn-icons-png.flaticon.com/512/326/326031.png"; // CSV/Doc icon
+                        imagePreviewContainer.style.display = 'block';
+                    }
+                } catch (e) {
+                    alert("Data file upload failed!");
+                    messageInput.disabled = false;
+                    messageInput.value = "";
+                }
+            }
+        });
+        
+        removeImageBtn.addEventListener('click', () => {
+            imageInput.value = '';
+            selectedImageBase64 = null;
+            selectedDataFile = null;
+            imagePreviewContainer.style.display = 'none';
+            messageInput.setAttribute('required', 'required');
+            messageInput.placeholder = "Chat with Sisca AI...";
+        });
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isListening = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                if (transcript) {
+                    messageInput.value = transcript;
+                    chatForm.dispatchEvent(new Event('submit'));
+                }
+            };
+
+            recognition.onend = () => {
+                if (isListening) {
+                    // Agar 'isListening' ON hai, aur AI farigh hai (na soch rahi hai, na bol rahi hai)
+                    // Toh mic ko wapas zinda kar do
+                    if (currentAbortController === null && currentAudio === null) {
+                        try { recognition.start(); } catch(e) {}
+                    }
+                } else {
+                    // Agar user ne khud 'stop' daba diya tha, toh UI effects hata do
+                    talkBtn.classList.remove('recording');
+                    const audioWaveform = document.getElementById('audioWaveform');
+                    if (audioWaveform) audioWaveform.style.display = 'none';
+                    document.getElementById('energy-core').classList.remove('listening');
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Mic error: ", event.error);
+                if (event.error !== 'no-speech') {
+                    stopMic();
+                }
+            };
+
+            talkBtn.addEventListener('click', () => {
+                if (isListening) stopMic();
+                else startMic();
+            });
+        } else {
+            talkBtn.style.display = 'none';
+        }
+
+        function startMic() {
+            isListening = true;
+            talkBtn.classList.add('recording');
+            audioWaveform.style.display = 'flex';
+            document.getElementById('energy-core').classList.add('listening');
+            if (recognition) recognition.start();
+        }
+
+        function stopMic() {
+            isListening = false;
+            talkBtn.classList.remove('recording');
+            audioWaveform.style.display = 'none';
+            document.getElementById('energy-core').classList.remove('listening');
+            if (recognition) recognition.stop();
+        }
+
+        function formatText(text) {
+            if (!text) return "";
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // ====== Research side panel helpers ======
+        // ---- Loading screen content: random Sisca workflows + quotes ----
+        const PC_TIPS = [
+            { t: 'wf', title: 'Research \u2192 Report', steps: [['fa-magnifying-glass', 'Search'], ['fa-book-open', 'Read pages'], ['fa-pen-nib', 'Summarize'], ['fa-envelope', 'Email it']] },
+            { t: 'wf', title: 'Data \u2192 Insight', steps: [['fa-table', 'Upload CSV'], ['fa-chart-line', 'Chart it'], ['fa-file-pdf', 'Export PDF']] },
+            { t: 'wf', title: 'Price hunt', steps: [['fa-globe', 'Open shops'], ['fa-scale-balanced', 'Compare'], ['fa-list-check', 'Short report']] },
+            { t: 'wf', title: 'Voice \u2192 Action', steps: [['fa-microphone', 'Say it'], ['fa-brain', 'Sisca thinks'], ['fa-bolt', 'Does it'], ['fa-volume-high', 'Replies aloud']] },
+            { t: 'wf', title: 'Send it later', steps: [['fa-pen-nib', 'Write mail'], ['fa-clock', 'Pick a time'], ['fa-paper-plane', 'Sisca sends']] },
+            { t: 'wf', title: 'Idea \u2192 Answer', steps: [['fa-lightbulb', 'Ask anything'], ['fa-wand-magic-sparkles', 'Sisca works'], ['fa-circle-check', 'Done']] },
+            { t: 'q', text: 'Sisca AI is in Beta Phase. Please report if you face any unexpected errors.' },
+            { t: 'q', text: 'Connect with Google to let Sisca send emails on your behalf.' },
+            { t: 'q', text: "Don't waste your time by doing repetitive work manually, let Sisca done it for you." },
+            { t: 'q', text: 'More features are coming in Sisca. Stay tuned!' },
+            { t: 'q', text: "Agentic AI is no more in future, it's finally here" },
+            { t: 'q', text: 'Sisca AI - Your Autonomous Assistant' },
+            { t: 'q', text: 'Protect your time! Assign multiple tasks to Sisca' },
+            { t: 'q', text: 'Good research takes a moment. I\u2019m reading the pages so you don\u2019t have to.', by: 'Sisca' }
+        ];
+        const PC_TIP_MS = 6500;
+        const PC_REVEAL_DELAY_MS = 1200;   // noVNC ko first frame draw karne ka waqt
+        const PC_GIVE_UP_MS = 45000;       // agar status kabhi na aaye to bhi screen dikha do
+        const PC_STAGE_TEXT = [
+            ['Booting Sisca\u2019s PC\u2026', 'A private browser is being set up just for your task'],
+            ['Starting the virtual PC\u2026', 'Waking up the sandbox'],
+            ['Opening the browser\u2026', 'Almost there \u2014 loading the first page'],
+            ['Connecting the live screen\u2026', 'You\u2019ll see Sisca working in a moment']
+        ];
+        let pcSession = 0, pcTimers = [], pcState = null, pcTipQueue = [], pcControlled = false;
+
+        // Screen lock: default me user live screen par click/type/scroll nahi kar sakta.
+        // "Take Control" => unlock, "Release Control" => dobara lock. Har naye research run par lock se shuru hota hai.
+        function pcSetControl(on) {
+            pcControlled = !!on;
+            const frame = document.getElementById('vncStreamFrame');
+            const btn = document.getElementById('pcControlBtn');
+            document.getElementById('pcShield').hidden = pcControlled;      // transparent shield: clicks/wheel/touch yahin rukte hain
+            frame.toggleAttribute('inert', !pcControlled);                  // keyboard focus + input bhi band
+            frame.tabIndex = pcControlled ? 0 : -1;
+            if (!pcControlled && document.activeElement === frame) frame.blur();
+            btn.textContent = pcControlled ? 'Release Control' : 'Take Control';
+            btn.classList.toggle('active', pcControlled);
+            btn.setAttribute('aria-pressed', String(pcControlled));
+            document.getElementById('pcControlHint').textContent = pcControlled
+                ? 'You are in control of this screen'
+                : 'Sisca is working on this screen';
+            pcSetBadge(!!(pcState && pcState.revealed));
+        }
+        document.getElementById('pcControlBtn').addEventListener('click', () => pcSetControl(!pcControlled));
+
+        // Hide / show toggle: panel slide-out hota hai, iframe (live session) chalta rehta hai
+        function pcSetHidden(hide) {
+            document.getElementById('virtualScreenContent').classList.toggle('show', !hide);
+            document.getElementById('pcHideBtn').setAttribute('aria-expanded', String(!hide));
+        }
+        document.getElementById('pcHideBtn').addEventListener('click', () => pcSetHidden(true));
+        window.pcSetHidden = pcSetHidden;   // right-panel toggle isi ko call karta hai
+
+        function pcClearTimers() {
+            pcTimers.forEach(t => { clearInterval(t); clearTimeout(t); });
+            pcTimers = [];
+        }
+
+        function pcNextTip() {
+            if (!pcTipQueue.length) {
+                pcTipQueue = PC_TIPS.slice();
+                for (let i = pcTipQueue.length - 1; i > 0; i--) {     // Fisher-Yates shuffle
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [pcTipQueue[i], pcTipQueue[j]] = [pcTipQueue[j], pcTipQueue[i]];
+                }
+            }
+            return pcTipQueue.pop();
+        }
+
+        function pcRenderTip(tip) {
+            const box = document.getElementById('pcTip');
+            if (!box) return;
+            box.innerHTML = '';
+            if (tip.t === 'wf') {
+                const title = document.createElement('div');
+                title.className = 'pc-tip-title';
+                title.textContent = tip.title;
+                const row = document.createElement('div');
+                row.className = 'pc-wf';
+                tip.steps.forEach((st, i) => {
+                    if (i > 0) {
+                        const ar = document.createElement('i');
+                        ar.className = 'fas fa-chevron-right pc-wf-arrow';
+                        ar.style.setProperty('--i', i * 2 - 1);
+                        row.appendChild(ar);
+                    }
+                    const node = document.createElement('div');
+                    node.className = 'pc-wf-node';
+                    node.style.setProperty('--i', i * 2);
+                    node.innerHTML = '<i class="fas ' + st[0] + '"></i><span></span>';
+                    node.querySelector('span').textContent = st[1];
+                    row.appendChild(node);
+                });
+                box.append(title, row);
+            } else {
+                const q = document.createElement('blockquote');
+                q.className = 'pc-quote';
+                q.textContent = '\u201C' + tip.text + '\u201D';
+                box.append(q);
+                if (tip.by) {                      // author optional hai
+                    const by = document.createElement('div');
+                    by.className = 'pc-quote-by';
+                    by.textContent = '\u2014 ' + tip.by;
+                    box.append(by);
+                }
+            }
+        }
+
+        function pcShowNextTip() {
+            const box = document.getElementById('pcTip');
+            if (!box) return;
+            box.classList.add('swap');
+            setTimeout(() => { pcRenderTip(pcNextTip()); box.classList.remove('swap'); }, 350);
+        }
+
+        function pcSetStage(idx) {
+            // idx: 1=starting PC, 2=opening browser, 3=connecting screen, 4=all done
+            document.querySelectorAll('#pcStages li').forEach((li, i) => {
+                li.className = i < idx ? 'done' : (i === idx ? 'active' : '');
+            });
+            const txt = PC_STAGE_TEXT[Math.min(idx, 3)];
+            document.getElementById('pcLoaderTitle').textContent = txt[0];
+            document.getElementById('pcLoaderSub').textContent = txt[1];
+        }
+
+        function pcSetBadge(live) {
+            const b = document.getElementById('pcStatusBadge');
+            b.classList.toggle('live', live);
+            document.getElementById('pcStatusText').textContent = pcControlled ? 'You control' : (live ? 'Live' : 'Starting');
+        }
+
+        function pcReveal(session) {
+            if (session !== pcSession || !pcState || pcState.revealed) return;
+            pcState.revealed = true;
+            pcClearTimers();
+            pcSetStage(4);
+            document.getElementById('vncStreamFrame').classList.add('ready');
+            document.getElementById('pcLoader').classList.add('hide');
+            pcSetBadge(true);
+        }
+
+        function pcEvaluate(session) {
+            if (session !== pcSession || !pcState || pcState.revealed) return;
+            const st = pcState;
+            const agentUp = (st.phase === 'ready' || st.phase === 'done');
+            pcSetStage(st.phase === 'launching' ? 2 : (agentUp ? 3 : 1));
+            if (agentUp && st.iframeLoaded && !st.revealTimer) {
+                st.revealTimer = setTimeout(() => pcReveal(session), PC_REVEAL_DELAY_MS);
+                pcTimers.push(st.revealTimer);
+            }
+        }
+
+        function pcPoll(session) {
+            fetch('/api/agent-status', { cache: 'no-store' })
+                .then(r => r.json())
+                .then(d => {
+                    if (session !== pcSession || !pcState) return;
+                    pcState.phase = d.phase || 'starting';
+                    pcEvaluate(session);
+                })
+                .catch(() => {});
+        }
+
+        // ====== Research side panel helpers ======
+        function openLiveScreen() {
+            const vs = document.getElementById('virtualScreenContent');
+            const frame = document.getElementById('vncStreamFrame');
+            const loader = document.getElementById('pcLoader');
+            const session = ++pcSession;
+            pcClearTimers();
+            pcState = { phase: 'starting', iframeLoaded: false, revealed: false, revealTimer: null };
+
+            // loading screen ON, raw VNC frame hidden, screen LOCKED
+            frame.classList.remove('ready');
+            loader.classList.remove('hide');
+            pcSetControl(false);
+            pcSetBadge(false);
+            pcSetStage(1);
+            pcRenderTip(pcNextTip());
+            pcTimers.push(setInterval(pcShowNextTip, PC_TIP_MS));
+
+            vs.style.display = 'block';
+            document.getElementById('pcHideBtn').setAttribute('aria-expanded', 'true');
+            requestAnimationFrame(() => vs.classList.add('show'));
+
+            frame.onload = () => {
+                if (session !== pcSession || !pcState) return;
+                pcState.iframeLoaded = true;
+                pcEvaluate(session);
+            };
+            // Dynamic Hostname fetch karke port 6080 par noVNC connect karein
+            frame.src = `http://${window.location.hostname}:6080/vnc.html?autoconnect=true&resize=scale`;
+
+            pcTimers.push(setInterval(() => pcPoll(session), 1500));
+            pcPoll(session);
+            pcTimers.push(setTimeout(() => pcReveal(session), PC_GIVE_UP_MS));
+        }
+
+        function closeLiveScreen() {
+            pcSession++;               // purane timers/poll ke callbacks ab ignore honge
+            pcClearTimers();
+            pcState = null;
+            const vs = document.getElementById('virtualScreenContent');
+            const frame = document.getElementById('vncStreamFrame');
+            frame.onload = null;
+            vs.classList.remove('show');
+            vs.style.display = 'none';
+            frame.src = "";
+            frame.classList.remove('ready');
+            pcSetControl(false);
+        }
+
+        // Headings (#), bullets (-), **bold** ko panel me properly render karta hai
+        function formatReport(text) {
+            if (!text) return "";
+            const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const inline = t => esc(t).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            let html = '', inList = false;
+            const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
+
+            for (const raw of text.split('\n')) {
+                const line = raw.trimEnd();
+                let m;
+                if ((m = line.match(/^\s*(#{1,6})\s+(.+)$/))) {
+                    closeList();
+                    const tag = m[1].length === 1 ? 'h2' : (m[1].length === 2 ? 'h3' : 'h4');
+                    html += `<${tag}>${inline(m[2])}</${tag}>`;
+                } else if ((m = line.match(/^\s*[-*\u2022]\s+(.+)$/))) {
+                    if (!inList) { html += '<ul>'; inList = true; }
+                    html += `<li>${inline(m[1])}</li>`;
+                } else if (line.trim() === '') {
+                    closeList();
+                    html += '<div class="rp-gap"></div>';
+                } else {
+                    closeList();
+                    html += `<div class="rp-line">${inline(line)}</div>`;
+                }
+            }
+            closeList();
+            return html;
+        }
+
+        // ==========================================
+        // 1. GLOBAL STATE MANAGERS (Audio, Typing, Limits)
+        // ==========================================
+        let currentAbortController = null;
+        let currentTypingInterval = null;
+        let currentAudio = null;
+        let stopTypingResolve = null;
+        let stopAudioResolve = null;
+        let isLimitReached = false;
+
+        // ==========================================
+        // 2. UNIVERSAL UNLOCK FUNCTION (Box ko kholna)
+        // ==========================================
+        function unlockUI() {
+            const messageInput = document.getElementById('messageInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const stopBtn = document.getElementById('stopBtn');
+
+            currentAbortController = null; // Agli request aane ke liye rasta saaf karein
+
+            if (!isLimitReached) {
+                if (messageInput) {
+                    messageInput.disabled = false;
+                    messageInput.style.cursor = "text";
+                    messageInput.placeholder = "Chat with Sisca AI...";
+                    messageInput.classList.remove("locked-input");
+                    messageInput.focus();
+                }
+                if (stopBtn) stopBtn.style.display = 'none';
+                if (sendBtn) sendBtn.style.display = 'inline-block';
+                
+                // --- NAYA: Agar Voice mode ON tha, toh ab wapas Mic zinda karein ---
+                if (typeof isListening !== 'undefined' && isListening && typeof recognition !== 'undefined' && recognition) {
+                    try { recognition.start(); } catch(e) {}
+                    const audioWaveform = document.getElementById('audioWaveform');
+                    if (audioWaveform) audioWaveform.style.display = 'flex';
+                    document.getElementById('energy-core').classList.add('listening');
+                }
+
+            } else {
+                if (messageInput) {
+                    messageInput.disabled = true;
+                    messageInput.style.cursor = "default";
+                    messageInput.placeholder = "Daily Limit reached. Please Login to access Unlimited Chats";
+                    messageInput.classList.add("locked-input");
+                }
+                if (stopBtn) stopBtn.style.display = 'none';
+                if (sendBtn) {
+                    sendBtn.style.display = 'inline-block';
+                    sendBtn.disabled = true;
+                    sendBtn.style.cursor = "default";
+                    sendBtn.style.opacity = "0.5";
+                }
+            }
+        }
+
+        // ==========================================
+        // 3. STOP BUTTON LOGIC
+        // ==========================================
+        document.getElementById('stopBtn').addEventListener('click', async () => {
+            if (currentAbortController) currentAbortController.abort();
+            
+            if (currentTypingInterval) {
+                clearInterval(currentTypingInterval);
+                currentTypingInterval = null;
+                if (stopTypingResolve) { stopTypingResolve(); stopTypingResolve = null; }
+            }
+            
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+                currentAudio = null;
+                if (stopAudioResolve) { stopAudioResolve(); stopAudioResolve = null; }
+            }
+            
+            // --- NAYA: Send hardware signal to Flask to murder the container process ---
+            try {
+                await fetch('/api/stop-agent', { method: 'POST' });
+            } catch (e) {
+                console.error("Failed to send stop signal to backend engine container.", e);
+            }
+
+            // Stream framework cleanly collapse
+            closeLiveScreen();
+            
+            // --- BUG FIX: Clear Data Panel AND bring back the Logo cleanly ---
+            const rightPanel = document.getElementById('rightPanelContent');
+            if (rightPanel) {
+                rightPanel.classList.remove('show');
+            }
+            document.getElementById('brandWrapper').classList.remove('hide-tech');
+            document.getElementById('brandWrapper').classList.add('show-tech');
+            
+            unlockUI();
+        });
+
+        // ==========================================
+        // 4. FORM SUBMISSION LOGIC
+        // ==========================================
+        chatForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            if (currentAbortController !== null) return;
+            // NAYA LOGIC: Jese hi send dabayein, logo fauran animation k sath gayab ho jaye
+            const topBrandWrapper = document.getElementById('brandWrapper');
+            if (topBrandWrapper && topBrandWrapper.style.display !== 'none') {
+                topBrandWrapper.classList.remove('show-tech');
+                topBrandWrapper.classList.add('hide-tech');
+                setTimeout(() => {
+                    topBrandWrapper.style.display = 'none';
+                }, 400); // 0.4s animation k baad mukammal hide
+            }
+            const message = messageInput.value;
+            const imageBase64 = selectedImageBase64;
+            const dataFile = selectedDataFile; // NAYA FIX: File tracker variable ko assign karein taake JS crash na ho
+            const wasVoiceCommand = isListening;
+            
+            // Ab hidden input se value lenge (Custom Dropdown)
+            const chatMode = document.getElementById('chatModeSelector').value;
+            const isAgentActive = (chatMode === 'research');
+            
+            // NAYA FIX: Agar file attach ho, toh empty message par request rokne ki bajaye aagay janay dein
+            if (!message.trim() && !imageBase64 && !dataFile) return;
+            
+            // AddMessage ab Promise ban gaya hai
+            addMessage(message || `Analyzing data file: ${dataFile}`, 'user', false, imageBase64);
+            
+            messageInput.value = '';
+            removeImageBtn.click();
+            
+            // --- TEMPORARY PAUSE: Mic ko sirf roko, 'isListening' state ko OFF mat karo ---
+            if (isListening && typeof recognition !== 'undefined' && recognition) {
+                recognition.stop();
+                const audioWaveform = document.getElementById('audioWaveform');
+                if (audioWaveform) audioWaveform.style.display = 'none';
+                document.getElementById('energy-core').classList.remove('listening');
+            }
+            
+            showTypingIndicator();
+
+            const sendBtn = document.getElementById('sendBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            
+            if (messageInput) {
+                messageInput.disabled = true;
+                messageInput.placeholder = "Sisca is responding...";
+                messageInput.style.cursor = "default";
+            }
+            if (sendBtn) sendBtn.style.display = 'none';
+            if (stopBtn) stopBtn.style.display = 'inline-block';
+            
+            currentAbortController = new AbortController();
+            const signal = currentAbortController.signal;
+
+            const savedUser = localStorage.getItem('sisca_user');
+            let userEmail = null;
+            
+            if (savedUser) {
+                const userObj = JSON.parse(savedUser);
+                userEmail = userObj.email;
+            }
+
+            // --- NAYI LOGIC: Agar Research mode ON he, to Live Screen dikhayen ---
+            if (isAgentActive) {
+                const brand = document.getElementById('brandWrapper');
+                brand.classList.remove('show-tech');
+                brand.classList.add('hide-tech'); // Logo hide karein
+                
+                openLiveScreen();
+            }
+            // ---------------------------------------------------------------------
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: signal,
+                    body: JSON.stringify({
+                        message: message || (dataFile ? "Analyze this data file and generate charts." : "Describe this image"),
+                        isVoice: wasVoiceCommand,
+                        image: imageBase64,
+                        data_file: dataFile,
+                        user_email: userEmail,
+                        is_agent_active: isAgentActive,
+                        is_visualize_active: isVisualizeModeOn, // NAYA FIX: Direct Dashboard button k variable se link kar dia
+                        user_keys: getRequestUserKeys() // user ki apni Gemini/Groq keys (agar add ki hon)
+                    })
+                });
+
+                if (response.status === 403) {
+                    removeTypingIndicator();
+                    isLimitReached = true;
+                    const limitModal = document.getElementById('guestLimitModal');
+                    if (limitModal) limitModal.style.display = 'flex';
+                    unlockUI();
+                    return;
+                }
+
+                const data = await response.json();
+                removeTypingIndicator();
+
+                if (data.warning_alert) {
+                    const warningModal = document.getElementById('guestWarningModal');
+                    if (warningModal) warningModal.style.display = 'flex';
+                }
+
+                if (data.error) {
+                    await addMessage(`Error: ${data.error}`, 'assistant', false);
+                    unlockUI();
+                } else {
+                    const lineCount = (data.response.match(/\n/g) || []).length + 1;
+                    
+                    // NAYA: Data Chart Interception
+                    if (data.chart_url) {
+                        const tasks = [];
+                        tasks.push(addMessage("Data Analysis complete. Chart displayed on the workspace.", 'assistant', false));
+                        
+                        // --- BUG FIX: Hide VNC Screen immediately so the chart is visible! ---
+                        closeLiveScreen();
+                        
+                        displayInRightPanel(data.response, data.chart_url, isAgentActive);
+                        if (data.audio) tasks.push(playAudio(data.audio));
+                        await Promise.all(tasks);
+                        unlockUI();
+                    } 
+                    else if (isAgentActive && (lineCount > 5 || data.response.length > 250)) {
+                        // RESEARCH MODE: sirf bara jawab right side panel me (chota jawab normal chat me)
+                        const tasks = [];
+                        tasks.push(addMessage("Research complete. Results are shown in the side panel.", 'assistant', false));
+                        closeLiveScreen();
+                        displayInRightPanel(data.response, null, true);
+                        if (data.audio) tasks.push(playAudio(data.audio));
+                        if (data.action === 'open_url' && data.url) {
+                            window.open(data.url, '_blank');
+                        }
+                        await Promise.all(tasks);
+                        unlockUI();
+                    }
+                    else if (lineCount > 5 || data.response.length > 250) {
+                        const tasks = [];
+                        tasks.push(addMessage("Document generated. Displayed on the main workspace.", 'assistant', false));
+                        
+                        // --- BUG FIX: Hide VNC Screen immediately so the document is visible! ---
+                        closeLiveScreen();
+                        
+                        displayInRightPanel(data.response);
+                        
+                        if (data.audio) {
+                            tasks.push(playAudio(data.audio));
+                        }
+                        
+                        if (data.action === 'open_url' && data.url) {
+                            window.open(data.url, '_blank');
+                        }
+                        await Promise.all(tasks);
+                        unlockUI();
+                    }  
+                    else {
+                        const tasks = [];
+                        tasks.push(addMessage(data.response, 'assistant', !wasVoiceCommand));
+                        if (data.audio) {
+                            tasks.push(playAudio(data.audio));
+                        }
+                                                 
+                        if (data.action === 'open_url' && data.url) {
+                            window.open(data.url, '_blank');
+                        }
+                        await Promise.all(tasks);
+                        
+                        // --- BUG FIX: Teardown VNC Sandbox for Short Responses & Prevent Overlap ---
+                        closeLiveScreen();
+                        
+                        const rightPanel = document.getElementById('rightPanelContent');
+                        const brandWrap = document.getElementById('brandWrapper');
+                        
+                        // SMART CHECK: Only show the logo if there is NO data report currently open
+                        if (!rightPanel.classList.contains('show')) {
+                            brandWrap.classList.remove('hide-tech');
+                            brandWrap.classList.add('show-tech');
+                        }
+                        // ---------------------------------------------------------------
+                        
+                        unlockUI();
+                    }
+                }
+            } catch (error) {
+                removeTypingIndicator();
+
+                // --- NAYI LOGIC: Agar error aye tab bhi screen band kar dein ---
+                if (isAgentActive) {
+                    closeLiveScreen();
+                    document.getElementById('brandWrapper').classList.remove('hide-tech');
+                    document.getElementById('brandWrapper').classList.add('show-tech');
+                }
+                // ---------------------------------------------------------------
+
+                if (error.name === 'AbortError') {
+                    await addMessage("<em>You've stopped this response!</em>", "assistant", false);
+                } else {
+                    await addMessage('An error occurred connecting to the server.', 'assistant', false);
+                }
+                unlockUI();
+            }
+            // NAYA LOGIC: Chat start hoty hi main logo ko animation k sath hide karein
+            if (topBrandWrapper && topBrandWrapper.style.display !== 'none') {
+                // Pehle animation class apply karein
+                topBrandWrapper.classList.remove('show-tech');
+                topBrandWrapper.classList.add('hide-tech');
+                
+                // 500ms (0.5s) wait karein taake animation poori ho jaye, phir jagah free karein
+                setTimeout(() => {
+                    topBrandWrapper.style.display = 'none';
+                }, 500);
+            }
+        });
+
+        // ==========================================
+        // 5. ASYNC SUPPORTING FUNCTIONS
+        // ==========================================
+        function addMessage(text, sender, isTyping = false, imageBase64 = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            let avatarHTML = '';
+            if (sender === 'assistant') {
+                avatarHTML = `<div class="message-avatar"><a href="https://siscaai.online" target="_blank" onclick="event.preventDefault();" style="cursor: default; display: flex;"><img src="/static/sisca_logo.svg" alt="Sisca AI" draggable="true"></a></div>`;
+            }
+            let imageHTML = '';
+            if (imageBase64) {
+                imageHTML = `<img src="data:image/jpeg;base64,${imageBase64}" style="max-width: 250px; border-radius: 12px; margin-bottom: 10px; display: block; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">`;
+            }
+            messageDiv.innerHTML = `${avatarHTML}<div class="message-wrapper"><div class="message-content">${imageHTML}<p class="text-container"></p></div></div>`;
+            
+            chatMessages.appendChild(messageDiv);
+            const textContainer = messageDiv.querySelector('.text-container');
+            
+            if (isTyping && text) {
+                return animateTyping(textContainer, text);
+            } else if (text) {
+                textContainer.innerHTML = formatText(text);
+                scrollToBottom();
+                return Promise.resolve();
+            }
+            return Promise.resolve();
+        }
+
+        function animateTyping(element, text) {
+            return new Promise((resolve) => {
+                stopTypingResolve = resolve;
+                element.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+                
+                // NAYA: Fast Chunk/Word-by-word Streaming Effect (ChatGPT style)
+                let words = text.split(' '); // Words/Chunks mein break kar liya
+                let i = 0;
+                let currentText = '';
+                
+                currentTypingInterval = setInterval(() => {
+                    if (i === 0) element.innerHTML = '';
+                    if (i < words.length) {
+                        currentText += words[i] + ' '; // Ek waqt mein pura chunk render hoga
+                        element.innerHTML = formatText(currentText);
+                        i++;
+                        scrollToBottom();
+                    } else {
+                        clearInterval(currentTypingInterval);
+                        currentTypingInterval = null;
+                        if (stopTypingResolve) { stopTypingResolve = null; resolve(); }
+                    }
+                }, 30); // Har chunk ke baad sirf 30ms ka delay (Super Fast)
+            });
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'tempTypingIndicator';
+            typingDiv.className = 'message assistant-message';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">
+                    <a href="https://siscaai.online" target="_blank" onclick="event.preventDefault();" style="cursor: default; display: flex;">
+                        <img src="/static/sisca_logo.svg" alt="Sisca AI" draggable="true">
+                    </a>
+                </div>
+                <div class="message-wrapper">
+                    <div class="message-content">
+                        <div class="typing-dots"><span></span><span></span><span></span></div>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            scrollToBottom();
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('tempTypingIndicator');
+            if (indicator) indicator.remove();
+        }
+
+        function playAudio(base64Data) {
+            return new Promise((resolve) => {
+                stopAudioResolve = resolve;
+                currentAudio = new Audio("data:audio/mp3;base64," + base64Data);
+                
+                currentAudio.onended = () => {
+                    currentAudio = null;
+                    if (stopAudioResolve) { stopAudioResolve = null; resolve(); }
+                };
+                currentAudio.onerror = () => {
+                    currentAudio = null;
+                    if (stopAudioResolve) { stopAudioResolve = null; resolve(); }
+                };
+                currentAudio.play().catch((err) => {
+                    console.log("Audio play prevented:", err);
+                    currentAudio = null;
+                    if (stopAudioResolve) { stopAudioResolve = null; resolve(); }
+                });
+            });
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // ====== MODAL LOGIC ======
+const feedbackModal = document.getElementById('feedbackModal');
+const howToUseModal = document.getElementById('howToUseModal');
+const feedbackBtn = document.getElementById('feedbackBtn');
+const howToUseBtn = document.getElementById('howToUseBtn');
+const closeFeedback = document.getElementById('closeFeedback');
+const closeHowToUse = document.getElementById('closeHowToUse');
+
+// Open Modals
+feedbackBtn.addEventListener('click', () => feedbackModal.style.display = 'flex');
+howToUseBtn.addEventListener('click', () => howToUseModal.style.display = 'flex');
+
+// NAYA: Disclaimer wale 'FEEDBACK' text par click karne se bhi popup khulega
+const disclaimerFeedbackBtn = document.getElementById('disclaimerFeedbackBtn');
+if (disclaimerFeedbackBtn) {
+    disclaimerFeedbackBtn.addEventListener('click', () => feedbackModal.style.display = 'flex');
+    // Keyboard se bhi khule (Enter / Space)
+    disclaimerFeedbackBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); feedbackModal.style.display = 'flex'; }
+    });
+}
+
+// Close Modals (Cross Button)
+closeFeedback.addEventListener('click', () => smoothClose(feedbackModal));
+closeHowToUse.addEventListener('click', () => smoothClose(howToUseModal));
+
+// ====== USER API KEYS (Google Gemini max 20 / Groq max 20 / Supabase max 1) ======
+// Keys sirf is browser ke localStorage me rehti hain; chat request ke saath server ko jati hain (server save nahi karta).
+const USER_KEYS_STORAGE = 'sisca_user_keys_v1';
+const KEY_PROVIDERS = {
+    gemini:   { label: 'Google Gemini', icon: 'fab fa-google',   max: 20, placeholder: 'Paste your Google API key here', helpText: 'Get a key', helpUrl: 'https://aistudio.google.com/apikey' },
+    groq:     { label: 'Groq',          icon: 'fas fa-bolt',     max: 20, placeholder: 'Paste your Groq API key here', helpText: 'Get a key', helpUrl: 'https://console.groq.com/keys' },
+    supabase: { label: 'Supabase',      icon: 'fas fa-database', max: 1,  placeholder: 'postgresql://postgres.xxxx:PASSWORD@xxx.pooler.supabase.com:6543/postgres', helpText: 'Where to find it', helpUrl: 'https://supabase.com/dashboard' }
+};
+const KEY_FORMAT = /^[A-Za-z0-9_.\-]{20,200}$/;
+
+function readUserKeys() {
+    const empty = { gemini: [], groq: [], supabase: '' };
+    try {
+        const o = JSON.parse(localStorage.getItem(USER_KEYS_STORAGE) || '{}') || {};
+        const clean = (a, max) => Array.isArray(a) ? a.filter(k => typeof k === 'string' && KEY_FORMAT.test(k)).slice(0, max) : [];
+        return {
+            gemini: clean(o.gemini, KEY_PROVIDERS.gemini.max),
+            groq: clean(o.groq, KEY_PROVIDERS.groq.max),
+            supabase: typeof o.supabase === 'string' ? o.supabase : ''
+        };
+    } catch (e) { return empty; }
+}
+
+function writeUserKeys(keys) {
+    try {
+        localStorage.setItem(USER_KEYS_STORAGE, JSON.stringify(keys));
+    } catch (e) { return false; }
+    refreshApiKeysIndicator();
+    return true;
+}
+
+function hasAnyUserKey(k) { k = k || readUserKeys(); return k.gemini.length > 0 || k.groq.length > 0 || !!k.supabase; }
+
+function refreshApiKeysIndicator() {
+    const btn = document.getElementById('apiKeysBtn');
+    if (btn) btn.classList.toggle('has-keys', hasAnyUserKey());
+}
+
+// /api/chat ke saath bheji jane wali keys (Supabase chat request me nahi jati)
+function getRequestUserKeys() {
+    const k = readUserKeys();
+    if (!k.gemini.length && !k.groq.length) return undefined;
+    return { gemini: k.gemini, groq: k.groq };
+}
+
+function maskKey(k) { return k.length <= 10 ? '\u2022\u2022\u2022\u2022' : k.slice(0, 4) + '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022' + k.slice(-4); }
+
+function supabaseHostOf(u) { try { return new URL(u).hostname; } catch (e) { return 'saved connection'; } }
+
+function validateSupabaseUrl(u) {
+    let url;
+    try { url = new URL(u); } catch (e) { return 'Enter a valid connection string (postgresql://...).'; }
+    if (url.protocol !== 'postgresql:' && url.protocol !== 'postgres:') return 'Connection string must start with postgresql://';
+    if (!/\.supabase\.(co|com)$/i.test(url.hostname)) return 'Host must be a Supabase host (*.supabase.co or *.supabase.com).';
+    if (!url.username || !url.password) return 'Connection string must include the database user and password.';
+    return '';
+}
+
+function addProviderKeys(provider, rawText) {
+    const keys = readUserKeys();
+    const max = KEY_PROVIDERS[provider].max;
+    const parts = rawText.split(/[\s,;]+/).map(x => x.trim()).filter(Boolean);
+    const r = { added: 0, dup: 0, bad: 0, over: 0, saved: true };
+    for (const part of parts) {
+        if (!KEY_FORMAT.test(part) || (provider === 'groq' && !part.startsWith('gsk_'))) { r.bad++; continue; }
+        if (keys[provider].includes(part)) { r.dup++; continue; }
+        if (keys[provider].length >= max) { r.over++; continue; }
+        keys[provider].push(part); r.added++;
+    }
+    if (r.added > 0) r.saved = writeUserKeys(keys);
+    return r;
+}
+
+function kEl(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+}
+
+function setKeysStatus(sec, text, kind) {
+    const st = sec.querySelector('.keys-status');
+    st.textContent = text || '';
+    st.className = 'keys-status' + (kind ? ' ' + kind : '');
+}
+
+function buildKeysSection(provider, keys, flash) {
+    const cfg = KEY_PROVIDERS[provider];
+    const list = provider === 'supabase' ? (keys.supabase ? [keys.supabase] : []) : keys[provider];
+    const sec = kEl('div', 'keys-section');
+
+    const head = kEl('div', 'keys-head');
+    const title = kEl('div', 'keys-title');
+    title.appendChild(kEl('i', cfg.icon));
+    title.appendChild(document.createTextNode(' ' + cfg.label));
+    const count = kEl('span', 'keys-count' + (list.length >= cfg.max ? ' full' : ''), list.length + ' / ' + cfg.max);
+    head.appendChild(title); head.appendChild(count);
+    sec.appendChild(head);
+
+    const hint = kEl('div', 'keys-hint', provider === 'supabase'
+        ? 'Optional. One Postgres connection string from your own Supabase project (URL-encode special characters in the password). '
+        : 'Up to ' + cfg.max + ' keys. Sisca rotates between them if one hits its limit. ');
+    const link = kEl('a', '', cfg.helpText);
+    link.href = cfg.helpUrl; link.target = '_blank'; link.rel = 'noopener noreferrer';
+    hint.appendChild(link);
+    sec.appendChild(hint);
+
+    const ul = kEl('ul', 'keys-list');
+    list.forEach((k, i) => {
+        const li = kEl('li', 'keys-item');
+        li.appendChild(kEl('span', 'keys-item-text', provider === 'supabase' ? supabaseHostOf(k) : maskKey(k)));
+        if (provider === 'supabase') {
+            const t = kEl('button', 'keys-test', 'Test'); t.type = 'button';
+            t.addEventListener('click', () => testSupabase(sec, k, t));
+            li.appendChild(t);
+        }
+        const del = kEl('button', 'keys-del'); del.type = 'button';
+        del.setAttribute('aria-label', 'Remove this key');
+        del.appendChild(kEl('i', 'fas fa-trash'));
+        del.addEventListener('click', () => {
+            const cur = readUserKeys();
+            if (provider === 'supabase') cur.supabase = ''; else cur[provider].splice(i, 1);
+            writeUserKeys(cur);
+            renderApiKeysPage({ provider, text: 'Key removed.', kind: 'ok' });
+        });
+        li.appendChild(del);
+        ul.appendChild(li);
+    });
+    sec.appendChild(ul);
+
+    if (list.length < cfg.max) {
+        const row = kEl('div', 'keys-row');
+        let input;
+        if (provider === 'supabase') {
+            // type=password browser ka saved password autofill kar deta tha (copy/cut block). type=text + CSS masking use kiya.
+            input = document.createElement('input'); input.type = 'text';
+            input.name = 'sisca-supabase-conn-' + Date.now();
+            input.setAttribute('autocapitalize', 'off'); input.setAttribute('autocorrect', 'off');
+            input.setAttribute('data-lpignore', 'true'); input.setAttribute('data-1p-ignore', 'true'); input.setAttribute('data-form-type', 'other');
+        }
+        else { input = document.createElement('textarea'); input.rows = 2; }
+        input.className = 'keys-input';
+        input.placeholder = cfg.placeholder;
+        input.autocomplete = 'off'; input.spellcheck = false;
+        input.value = '';
+        const add = kEl('button', 'keys-add', 'Add'); add.type = 'button';
+        const doAdd = () => {
+            const val = input.value.trim();
+            if (!val) { setKeysStatus(sec, 'Paste a key first.', 'err'); return; }
+            if (provider === 'supabase') {
+                const err = validateSupabaseUrl(val);
+                if (err) { setKeysStatus(sec, err, 'err'); return; }
+                const cur = readUserKeys(); cur.supabase = val;
+                if (!writeUserKeys(cur)) { setKeysStatus(sec, 'Could not save in this browser (storage blocked).', 'err'); return; }
+                renderApiKeysPage({ provider, text: 'Supabase connection saved.', kind: 'ok' });
+                return;
+            }
+            const r = addProviderKeys(provider, val);
+            if (!r.saved) { setKeysStatus(sec, 'Could not save in this browser (storage blocked).', 'err'); return; }
+            const bits = [];
+            if (r.added) bits.push('Added ' + r.added + (r.added === 1 ? ' key.' : ' keys.'));
+            if (r.dup) bits.push(r.dup + ' duplicate skipped.');
+            if (r.bad) bits.push(r.bad + ' invalid skipped' + (provider === 'groq' ? ' (Groq keys start with gsk_).' : '.'));
+            if (r.over) bits.push(r.over + ' skipped (limit ' + cfg.max + ' reached).');
+            if (r.added) renderApiKeysPage({ provider, text: bits.join(' '), kind: 'ok' });
+            else setKeysStatus(sec, bits.join(' '), 'err');
+        };
+        add.addEventListener('click', doAdd);
+        if (provider === 'supabase') input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); doAdd(); } });
+        row.appendChild(input); row.appendChild(add);
+        sec.appendChild(row);
+    } else {
+        sec.appendChild(kEl('div', 'keys-hint keys-full', 'Limit reached. Remove a key to add another.'));
+    }
+
+    sec.appendChild(kEl('div', 'keys-status'));
+    if (flash && flash.provider === provider) setKeysStatus(sec, flash.text, flash.kind);
+    return sec;
+}
+
+function renderApiKeysPage(flash) {
+    const box = document.getElementById('keysSections');
+    const keys = readUserKeys();
+    box.textContent = '';
+    Object.keys(KEY_PROVIDERS).forEach(p => box.appendChild(buildKeysSection(p, keys, flash)));
+    document.getElementById('removeAllKeysBtn').style.display = hasAnyUserKey(keys) ? '' : 'none';
+}
+
+async function testSupabase(sec, url, btn) {
+    setKeysStatus(sec, 'Testing connection...', '');
+    btn.disabled = true;
+    try {
+        const res = await fetch('/api/test-supabase', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: url })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (data.ok) setKeysStatus(sec, 'Connected successfully.', 'ok');
+        else setKeysStatus(sec, data.error || (res.status === 429 ? 'Too many tests. Try again in a few minutes.' : 'Connection failed.'), 'err');
+    } catch (e) {
+        setKeysStatus(sec, 'Network error while testing.', 'err');
+    } finally { btn.disabled = false; }
+}
+
+// API Keys ab popup nahi: main screen par page ban kar khulta hai (chat chhup jata hai, "Back to chat" se wapas)
+const apiKeysBtn = document.getElementById('apiKeysBtn');
+const apiKeysPage = document.getElementById('apiKeysPage');
+function isKeysPageOpen() { return document.body.classList.contains('keys-page-open'); }
+function openApiKeysPage() {
+    renderApiKeysPage();
+    document.body.classList.add('keys-page-open');
+    apiKeysBtn.classList.add('current');
+    apiKeysPage.scrollTop = 0;
+    // Mobile par sidebar poori screen dhakta hai: page dikhane ke liye band kar do
+    if (window.innerWidth <= 900) { const x = document.getElementById('closeSidebar'); if (x) x.click(); }
+}
+function closeApiKeysPage() {
+    document.body.classList.remove('keys-page-open');
+    apiKeysBtn.classList.remove('current');
+}
+apiKeysBtn.addEventListener('click', () => { isKeysPageOpen() ? closeApiKeysPage() : openApiKeysPage(); });
+document.getElementById('keysBackBtn').addEventListener('click', closeApiKeysPage);
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !isKeysPageOpen()) return;
+    if (document.querySelector('.modal[style*="display: flex"]')) return;   // koi popup khula ho to pehle wahi band ho
+    closeApiKeysPage();
+});
+document.getElementById('removeAllKeysBtn').addEventListener('click', () => {
+    if (!confirm('Remove all saved API keys from this browser?')) return;
+    try { localStorage.removeItem(USER_KEYS_STORAGE); } catch (e) {}
+    refreshApiKeysIndicator();
+    renderApiKeysPage();
+});
+refreshApiKeysIndicator();
+
+// Submit Feedback Function
+async function submitFeedback() {
+    const text = document.getElementById('feedbackText').value;
+    
+    // BUG FIX: Ab yeh specifically sirf Feedback modal ke button ko hi pakrega
+    const submitBtn = document.querySelector('#feedbackModal .modal-submit-btn');
+
+    if(text.trim() === "") {
+        alert("This must not be empty!");
+        return;
+    }
+
+    // Button ko foran disable aur text change karein taake double click na ho
+    const originalText = submitBtn.innerText;
+    submitBtn.innerText = "Sending...";
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = "0.7"; // Thora dundhla (fade) kar dega taake click na ho sake
+
+    try {
+        // Backend API ko sirf text bhejenge (Bilkul Anonymous)
+        const response = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            alert("Error: " + data.error);
+        } else {
+            alert("Thank you! Your feedback has been submitted successfully.");
+            document.getElementById('feedbackText').value = "";
+            feedbackModal.style.display = 'none';
+        }
+    } catch (error) {
+        alert("Network error: Feedback not sent!");
+    } finally {
+        // Response aane ke baad button ko wapas normal state me layen
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+    }
+}
+
+
+// ====== ROUTING LOGIC (Long Texts to Right Panel) ======
+const brandWrapper = document.getElementById('brandWrapper');
+const rightPanelContent = document.getElementById('rightPanelContent');
+const rightPanelText = document.getElementById('rightPanelText');
+const closeRightPanel = document.getElementById('closeRightPanel');
+
+function displayInRightPanel(text, chartUrl = null, asSide = false) {
+    rightPanelContent.classList.toggle('side-panel', asSide);
+    // Logo ko cool animation k sath blur karke hide karein
+    brandWrapper.classList.remove('show-tech');
+    brandWrapper.classList.add('hide-tech');
+    
+    // NAYA: Chart Display Logic
+    const chartImg = document.getElementById('rightPanelChart');
+    if (chartUrl) {
+        chartImg.src = chartUrl;
+        chartImg.style.display = 'block';
+    } else {
+        chartImg.style.display = 'none';
+        chartImg.src = "";
+    }
+    
+    // Naye text panel ko show karein
+    rightPanelContent.classList.add('show');
+    rightPanelText.innerHTML = ''; 
+    
+// Fast chunk/word streaming for long documents
+        let words = text.split(' '); 
+        let i = 0;
+        let currentText = ''; 
+        const interval = setInterval(() => {
+            if (i < words.length) {
+                currentText += words[i] + ' ';
+                rightPanelText.innerHTML = formatReport(currentText); 
+                i++;
+                rightPanelContent.scrollTop = rightPanelContent.scrollHeight;
+            } else {
+                clearInterval(interval);
+            }
+        }, 25); // Har word par 5ms (Bijli jaisi speed)
+}
+
+// Close button (X) dabane se wapas Logo show karein
+closeRightPanel.addEventListener('click', () => {
+    rightPanelContent.classList.remove('show');
+    brandWrapper.classList.remove('hide-tech');
+    brandWrapper.classList.add('show-tech');
+});
+
+// ==========================================
+// ENTER KEY LOGIC FOR LOGIN & SIGNUP MODALS
+// ==========================================
+
+// --- Login Modal Enter Key Logic ---
+const loginEmailInput = document.getElementById('loginEmail');
+const loginPasswordInput = document.getElementById('loginPassword');
+
+loginEmailInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Default form submission rokne k liye
+        loginPasswordInput.focus(); // Next box par focus
+    }
+});
+
+loginPasswordInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        submitLogin(); // Last box par enter dabane se Login submit
+    }
+});
+
+
+// --- Signup Modal Enter Key Logic ---
+const signupFirstNameInput = document.getElementById('signupFirstName');
+const signupLastNameInput = document.getElementById('signupLastName');
+const signupEmailInput = document.getElementById('signupEmail');
+const signupPasswordInput = document.getElementById('signupPassword');
+const signupOTPInput = document.getElementById('signupOTP'); // NAYA: OTP box ka variable
+
+signupFirstNameInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        signupLastNameInput.focus();
+    }
+});
+
+signupLastNameInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        signupEmailInput.focus();
+    }
+});
+
+signupEmailInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        signupPasswordInput.focus(); // Ab Email k baad Password par jayega
+    }
+});
+
+signupPasswordInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        signupOTPInput.focus(); // Ab Password k baad OTP box par jayega
+    }
+});
+
+signupOTPInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        submitSignup(); // OTP k baad sidha Submit hoga
+    }
+});
+
+// ==========================================
+// DOWNLOAD REPORT AS PDF LOGIC
+// ==========================================
+const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+
+if (downloadPdfBtn) {
+    downloadPdfBtn.addEventListener('click', () => {
+        // 1. Change button text/icon to show it's working
+        const originalIcon = downloadPdfBtn.innerHTML;
+        downloadPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        // 2. Extract Data & Create a Clean, Print-Friendly Container
+        const reportText = document.getElementById('rightPanelText').innerHTML;
+        const chartImg = document.getElementById('rightPanelChart');
+        let chartHtml = '';
+
+        // Check if the chart is visible, if yes, include it securely in the PDF
+        if (chartImg && chartImg.style.display !== 'none' && chartImg.src) {
+            chartHtml = `<img src="${chartImg.src}" style="width: 100%; margin-top: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">`;
+        }
+
+        const printContainer = document.createElement('div');
+        printContainer.innerHTML = `
+            <div style="padding: 30px; font-family: 'Inter', sans-serif; color: #1c282d;">
+                <h2 style="color: #006064; border-bottom: 2px solid #006064; padding-bottom: 10px; margin-bottom: 20px;">Generated with Sisca</h2>
+                <div style="white-space: pre-wrap; line-height: 1.8; font-size: 15px;">${reportText}</div>
+                ${chartHtml}
+            </div>
+        `;
+
+        // 3. Define PDF settings
+        const opt = {
+            margin:       0.3, // Reduced margin since we added padding inside the container
+            filename:     'Sisca_AI_Data_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        // 4. Generate and Download
+        html2pdf().set(opt).from(printContainer).save().then(() => {
+            // Restore button
+            downloadPdfBtn.innerHTML = originalIcon;
+            showNotification('Report downloaded successfully!', 'success');
+        }).catch(err => {
+            console.error("PDF Generation Error: ", err);
+            downloadPdfBtn.innerHTML = originalIcon;
+            showNotification('Failed to download PDF.', 'error');
+        });
+    });
+}
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    let firstName = null;
+    
+    // Direct main 'sisca_user' object se naam nikal rahe hain
+    const savedUserStr = localStorage.getItem('sisca_user');
+    if (savedUserStr) {
+        try {
+            const userObj = JSON.parse(savedUserStr);
+            firstName = userObj.first_name;
+        } catch (e) {
+            console.error("Error fetching user data", e);
+        }
+    }
+
+    const greetings = [
+        "Welcome to Sisca",
+        "Hello",
+        "Good to see you",
+        "Greetings",
+        "Welcome back",
+        "How's your day going"
+    ];
+    
+    const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+    const greetingElement = document.getElementById("sisca-greeting");
+    
+    if (greetingElement) {
+        if (firstName && firstName !== "null") {
+            greetingElement.innerText = `${randomGreeting}, ${firstName}`;
+        } else {
+            greetingElement.innerText = `Welcome to Sisca AI`;
+        }
+    }
+});
+</script>
+
+
+<script>
+// ====== Right panel toggle (hamesha available) ======
+(function () {
+    const btn = document.getElementById('panelToggleBtn');
+    const idle = document.getElementById('brandPanel');
+    const report = document.getElementById('rightPanelContent');
+    const pc = document.getElementById('virtualScreenContent');
+    if (!btn || !idle || !report || !pc) return;
+
+    const isOpen = () => idle.classList.contains('show') || report.classList.contains('show') || pc.classList.contains('show');
+
+    function syncBtn() {
+        const open = isOpen();
+        btn.classList.toggle('active', open);
+        btn.setAttribute('aria-expanded', String(open));
+    }
+
+    function closeAll() {
+        idle.classList.remove('show');
+        if (pc.classList.contains('show')) pcSetHidden(true);   // live session chalta rehta hai
+        if (report.classList.contains('show')) {
+            report.classList.remove('show');
+            const bw = document.getElementById('brandWrapper');
+            if (bw) { bw.classList.remove('hide-tech'); bw.classList.add('show-tech'); }
+        }
+    }
+
+    function openBest() {
+        const pcActive = pc.style.display === 'block';
+        const hasReport = document.getElementById('rightPanelText').innerHTML.trim() !== '';
+        if (pcActive) pcSetHidden(false);
+        else if (hasReport) report.classList.add('show');
+        else idle.classList.add('show');
+    }
+
+    btn.addEventListener('click', () => { isOpen() ? closeAll() : openBest(); setTimeout(syncBtn, 0); });
+
+    // Koi aur panel khule to default brand panel hat jaye; button state sync rahe
+    const obs = new MutationObserver(() => {
+        // Sirf tab remove karo jab 'show' maujood ho. Warna classList.remove() khali bhi chale to idle ki
+        // class attribute dobara likhi jati hai -> observer dobara fire -> infinite loop -> "Page Unresponsive".
+        if ((report.classList.contains('show') || pc.classList.contains('show')) && idle.classList.contains('show')) idle.classList.remove('show');
+        syncBtn();
+    });
+    [idle, report, pc].forEach(el => obs.observe(el, { attributes: true, attributeFilter: ['class'] }));
+    syncBtn();
+})();
+</script>
+
+<script>
+// ====== Right panel: drag-to-resize (width localStorage me save hoti hai) ======
+(function () {
+    const handle = document.getElementById('panelResizer');
+    const sidebar = document.getElementById('leftSidebar');
+    if (!handle) return;
+
+    const KEY = 'sisca.sidePanelWidth';
+    const root = document.documentElement;
+    const MIN_W = 320;        // panel ki sab se choti width
+    const MAX_FRAC = 0.40;    // panel ki sab se bari width = screen ka 40% (CSS me --side-panel-max se match)
+    const MIN_CHAT = 360;     // chat ke liye kam az kam jagah
+    const LEFT_W = 320;       // left sidebar ki width (jab open ho)
+    let wanted = null;        // user ki chuni hui width (px)
+
+    try { const v = parseInt(localStorage.getItem(KEY), 10); if (v > 0) wanted = v; } catch (e) {}
+
+    const maxWidth = () => {
+        const left = (sidebar && sidebar.classList.contains('open') && window.innerWidth > 900) ? LEFT_W : 0;
+        return Math.max(MIN_W, Math.min(Math.floor(window.innerWidth * MAX_FRAC), window.innerWidth - left - MIN_CHAT));
+    };
+    const clamp = w => Math.min(maxWidth(), Math.max(MIN_W, w));
+
+    function apply() {
+        if (wanted == null) { root.style.removeProperty('--side-panel-user-w'); return; }
+        root.style.setProperty('--side-panel-user-w', clamp(wanted) + 'px');
+    }
+    function currentWidth() {
+        const el = document.querySelector('.document-overlay.side-panel.show');
+        return el ? el.getBoundingClientRect().width : MIN_W;
+    }
+    function save() { try { wanted == null ? localStorage.removeItem(KEY) : localStorage.setItem(KEY, String(Math.round(wanted))); } catch (e) {} }
+
+    let dragging = false;
+    handle.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        handle.setPointerCapture(e.pointerId);
+        document.body.classList.add('panel-resizing');
+        e.preventDefault();
+    });
+    handle.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        wanted = clamp(window.innerWidth - e.clientX);   // panel right edge se anchored hai
+        apply();
+    });
+    const stop = (e) => {
+        if (!dragging) return;
+        dragging = false;
+        try { handle.releasePointerCapture(e.pointerId); } catch (err) {}
+        document.body.classList.remove('panel-resizing');
+        save();
+    };
+    handle.addEventListener('pointerup', stop);
+    handle.addEventListener('pointercancel', stop);
+
+    // Double-click: default size par wapas
+    handle.addEventListener('dblclick', () => { wanted = null; apply(); save(); });
+
+    // Keyboard: Left/Right arrow se 24px steps
+    handle.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+        e.preventDefault();
+        wanted = clamp((wanted == null ? currentWidth() : wanted) + (e.key === 'ArrowLeft' ? 24 : -24));
+        apply(); save();
+    });
+
+    // Window resize ya left sidebar open/close par width ko limit ke andar rakho
+    window.addEventListener('resize', apply);
+    if (sidebar) new MutationObserver(apply).observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+    apply();
+})();
+</script>
+</body>
+</html>

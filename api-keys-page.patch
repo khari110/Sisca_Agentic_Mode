@@ -1,0 +1,193 @@
+diff --git a/static/styles.css b/static/styles.css
+index 96c8f31..a28a2ad 100644
+--- a/static/styles.css
++++ b/static/styles.css
+@@ -1546,8 +1546,11 @@ body.panel-resizing .panel-toggle-btn { transition: none !important; }
+     align-self: center;
+ }
+ 
+-/* ===== API Keys popup (Gemini / Groq / Supabase) ===== */
++/* ===== API Keys page (main screen) - Gemini / Groq / Supabase ===== */
+ #apiKeysBtn { position: relative; }
++/* Page khuli ho to tile highlighted (sidebar light hai, is liye teal; safed rang icon ko ghayab kar deta tha) */
++.sidebar-section .control-grid #apiKeysBtn.current span { color: var(--theme-primary); }
++.sidebar-section .control-grid #apiKeysBtn.current i { transform: scale(1.12); }
+ #apiKeysBtn.has-keys::after {
+     content: '';
+     position: absolute;
+@@ -1560,15 +1563,34 @@ body.panel-resizing .panel-toggle-btn { transition: none !important; }
+     box-shadow: 0 0 0 2px #fff;
+ }
+ 
+-.keys-modal { max-width: 560px; }
+-.keys-modal h2 i { margin-right: 0.4rem; }
+-.keys-scroll { max-height: 55vh; overflow-y: auto; padding-right: 6px; }
++/* Page: chat ki jagah main area me. .centered-layout ke andar hai, isliye sidebar / right panel ke saath khud shift hota hai */
++.keys-page { display: none; width: 100%; height: 100%; overflow-y: auto; box-sizing: border-box; padding-top: 3.5rem; }
++body.keys-page-open .keys-page { display: block; animation: keysPageIn 0.28s ease-out both; }
++body.keys-page-open .centered-layout > .brand-wrapper,
++body.keys-page-open .centered-layout > .chat-section-centered { display: none !important; }
++body.keys-page-open .centered-layout { justify-content: flex-start; }
++.keys-page-inner { max-width: 760px; margin: 0 auto; padding: 0 0.25rem 2rem; }
++.keys-page-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
++.keys-page-head > div { flex: 1 1 280px; min-width: 0; }
++.keys-page-head h1 { white-space: nowrap; margin: 0 0 0.5rem; font-size: 1.9rem; font-weight: 600; color: var(--text-dark); letter-spacing: 0.2px; }
++.keys-page-head h1 i { color: var(--theme-primary); margin-right: 0.5rem; font-size: 1.5rem; }
++.keys-page-head p { margin: 0; max-width: 540px; font-size: 0.9rem; line-height: 1.55; color: var(--theme-secondary); }
++.keys-back-btn {
++    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.45rem;
++    padding: 0.55rem 1rem; border: 1px solid var(--glass-border); border-radius: 12px;
++    background: rgba(255, 255, 255, 0.7); color: var(--theme-secondary);
++    font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;
++    transition: background 0.2s, color 0.2s, border-color 0.2s;
++}
++.keys-back-btn:hover { background: #fff; color: var(--theme-primary); border-color: var(--theme-primary); }
++@keyframes keysPageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
++@media (prefers-reduced-motion: reduce) { body.keys-page-open .keys-page { animation: none; } }
+ 
+ .keys-section {
+     border: 1px solid var(--glass-border);
+-    border-radius: 14px;
+-    padding: 0.9rem 1rem;
+-    margin-bottom: 0.9rem;
++    border-radius: 16px;
++    padding: 1.1rem 1.25rem;
++    margin-bottom: 1rem;
+     background: rgba(255, 255, 255, 0.6);
+ }
+ .keys-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.3rem; }
+@@ -1627,7 +1649,6 @@ body.panel-resizing .panel-toggle-btn { transition: none !important; }
+     transition: border-color 0.3s;
+ }
+ .keys-input:focus { border-color: var(--theme-primary); }
+-.modal textarea.keys-input { margin-bottom: 0; padding: 0.6rem 0.8rem; border-radius: 12px; }
+ .keys-add {
+     border: none;
+     border-radius: 12px;
+@@ -1647,7 +1668,7 @@ body.panel-resizing .panel-toggle-btn { transition: none !important; }
+ .keys-remove-all {
+     width: 100%;
+     margin-top: 0.3rem;
+-    padding: 0.6rem;
++    padding: 0.7rem;
+     border: 1px solid rgba(239, 68, 68, 0.35);
+     border-radius: 12px;
+     background: transparent;
+diff --git a/templates/index.html b/templates/index.html
+index efe94f8..a16673f 100644
+--- a/templates/index.html
++++ b/templates/index.html
+@@ -166,6 +166,21 @@
+             </form>
+         </div>
+ 
++        <!-- API Keys: main screen page (popup nahi). body.keys-page-open par chat chhup kar ye dikhta hai -->
++        <section id="apiKeysPage" class="keys-page" aria-labelledby="keysPageTitle">
++            <div class="keys-page-inner">
++                <div class="keys-page-head">
++                    <div>
++                        <h1 id="keysPageTitle"><i class="fas fa-key"></i> API Keys</h1>
++                        <p>Use Sisca with your own keys. Keys are kept only in this browser and are sent with your chat requests &mdash; they are not stored on the server. If you add no key for a provider, Sisca's default key is used.</p>
++                    </div>
++                    <button type="button" class="keys-back-btn" id="keysBackBtn"><i class="fas fa-arrow-left"></i> Back to chat</button>
++                </div>
++                <div class="keys-sections" id="keysSections"></div>
++                <button type="button" class="keys-remove-all" id="removeAllKeysBtn"><i class="fas fa-trash"></i> Remove all keys from this browser</button>
++            </div>
++        </section>
++
+         <!-- Hidden Document Overlay (Slides up for long reports/charts) -->
+         <div id="rightPanelContent" class="document-overlay">
+             <button id="closeRightPanel" class="close-panel-btn"><i class="fas fa-times"></i></button>
+@@ -418,16 +433,6 @@
+     </div>
+ </div>
+ 
+-<div id="apiKeysModal" class="modal">
+-    <div class="modal-content keys-modal">
+-        <span class="close-btn" id="closeApiKeys">&times;</span>
+-        <h2><i class="fas fa-key"></i> Your API Keys</h2>
+-        <p style="margin-bottom: 1rem;">Use Sisca with your own keys. Keys are kept only in this browser and are sent with your chat requests &mdash; they are not stored on the server. If you add no key for a provider, Sisca's default key is used.</p>
+-        <div class="keys-scroll" id="keysSections"></div>
+-        <button type="button" class="keys-remove-all" id="removeAllKeysBtn"><i class="fas fa-trash"></i> Remove all keys from this browser</button>
+-    </div>
+-</div>
+-
+ <div id="connectModal" class="modal">
+     <div class="modal-content">
+         <span class="close-btn" id="closeConnect">&times;</span>
+@@ -2047,7 +2052,7 @@ function buildKeysSection(provider, keys, flash) {
+             const cur = readUserKeys();
+             if (provider === 'supabase') cur.supabase = ''; else cur[provider].splice(i, 1);
+             writeUserKeys(cur);
+-            renderApiKeysModal({ provider, text: 'Key removed.', kind: 'ok' });
++            renderApiKeysPage({ provider, text: 'Key removed.', kind: 'ok' });
+         });
+         li.appendChild(del);
+         ul.appendChild(li);
+@@ -2071,7 +2076,7 @@ function buildKeysSection(provider, keys, flash) {
+                 if (err) { setKeysStatus(sec, err, 'err'); return; }
+                 const cur = readUserKeys(); cur.supabase = val;
+                 if (!writeUserKeys(cur)) { setKeysStatus(sec, 'Could not save in this browser (storage blocked).', 'err'); return; }
+-                renderApiKeysModal({ provider, text: 'Supabase connection saved.', kind: 'ok' });
++                renderApiKeysPage({ provider, text: 'Supabase connection saved.', kind: 'ok' });
+                 return;
+             }
+             const r = addProviderKeys(provider, val);
+@@ -2081,7 +2086,7 @@ function buildKeysSection(provider, keys, flash) {
+             if (r.dup) bits.push(r.dup + ' duplicate skipped.');
+             if (r.bad) bits.push(r.bad + ' invalid skipped' + (provider === 'groq' ? ' (Groq keys start with gsk_).' : '.'));
+             if (r.over) bits.push(r.over + ' skipped (limit ' + cfg.max + ' reached).');
+-            if (r.added) renderApiKeysModal({ provider, text: bits.join(' '), kind: 'ok' });
++            if (r.added) renderApiKeysPage({ provider, text: bits.join(' '), kind: 'ok' });
+             else setKeysStatus(sec, bits.join(' '), 'err');
+         };
+         add.addEventListener('click', doAdd);
+@@ -2097,7 +2102,7 @@ function buildKeysSection(provider, keys, flash) {
+     return sec;
+ }
+ 
+-function renderApiKeysModal(flash) {
++function renderApiKeysPage(flash) {
+     const box = document.getElementById('keysSections');
+     const keys = readUserKeys();
+     box.textContent = '';
+@@ -2122,14 +2127,34 @@ async function testSupabase(sec, url, btn) {
+     } finally { btn.disabled = false; }
+ }
+ 
+-const apiKeysModal = document.getElementById('apiKeysModal');
+-document.getElementById('apiKeysBtn').addEventListener('click', () => { renderApiKeysModal(); apiKeysModal.style.display = 'flex'; });
+-document.getElementById('closeApiKeys').addEventListener('click', () => smoothClose(apiKeysModal));
++// API Keys ab popup nahi: main screen par page ban kar khulta hai (chat chhup jata hai, "Back to chat" se wapas)
++const apiKeysBtn = document.getElementById('apiKeysBtn');
++const apiKeysPage = document.getElementById('apiKeysPage');
++function isKeysPageOpen() { return document.body.classList.contains('keys-page-open'); }
++function openApiKeysPage() {
++    renderApiKeysPage();
++    document.body.classList.add('keys-page-open');
++    apiKeysBtn.classList.add('current');
++    apiKeysPage.scrollTop = 0;
++    // Mobile par sidebar poori screen dhakta hai: page dikhane ke liye band kar do
++    if (window.innerWidth <= 900) { const x = document.getElementById('closeSidebar'); if (x) x.click(); }
++}
++function closeApiKeysPage() {
++    document.body.classList.remove('keys-page-open');
++    apiKeysBtn.classList.remove('current');
++}
++apiKeysBtn.addEventListener('click', () => { isKeysPageOpen() ? closeApiKeysPage() : openApiKeysPage(); });
++document.getElementById('keysBackBtn').addEventListener('click', closeApiKeysPage);
++document.addEventListener('keydown', (e) => {
++    if (e.key !== 'Escape' || !isKeysPageOpen()) return;
++    if (document.querySelector('.modal[style*="display: flex"]')) return;   // koi popup khula ho to pehle wahi band ho
++    closeApiKeysPage();
++});
+ document.getElementById('removeAllKeysBtn').addEventListener('click', () => {
+     if (!confirm('Remove all saved API keys from this browser?')) return;
+     try { localStorage.removeItem(USER_KEYS_STORAGE); } catch (e) {}
+     refreshApiKeysIndicator();
+-    renderApiKeysModal();
++    renderApiKeysPage();
+ });
+ refreshApiKeysIndicator();
+ 

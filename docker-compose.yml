@@ -1,0 +1,32 @@
+services:
+  sisca-virtual-computer:
+    build: .
+    container_name: sisca_agent_sandbox
+    restart: unless-stopped
+    ports:
+      # SECURITY: noVNC (bina password) default me sirf localhost par. Remote server par
+      # VNC_BIND=0.0.0.0 tabhi karein jab firewall / authenticated reverse-proxy lagi ho.
+      - "${VNC_BIND:-127.0.0.1}:6080:6080"
+    shm_size: '2gb'
+    # Researcher agent tuning (sab optional; defaults researcher.py me hain). Badalne ke baad:
+    #   docker compose up -d   (container recreate hota hai)
+    environment:
+      - SISCA_AGENT_MODEL=${SISCA_AGENT_MODEL:-gemini-3-flash-preview}
+      - SISCA_THINKING_LEVEL=${SISCA_THINKING_LEVEL:-low}      # MINIMAL | LOW | MEDIUM | HIGH
+      - SISCA_TEXT_FIRST=${SISCA_TEXT_FIRST:-1}                # 1 = page text pehle, 0 = hamesha screenshot
+      - SISCA_PLAN_MEMORY=${SISCA_PLAN_MEMORY:-0}              # 1 = todo.md style plan memory
+    # --- NAYA: Bypass Docker Security for Chromium Sandbox ---
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp=unconfined
+    # --------------------------------------------------------
+    volumes:
+      - ./uploads:/app/uploads
+      - ./static/outputs:/app/static/outputs
+      - ./agent_scripts:/app/agent_scripts 
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G # NAYA: Increased memory to prevent Docker from killing the container

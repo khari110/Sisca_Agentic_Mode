@@ -1,0 +1,29 @@
+diff --git a/static/styles.css b/static/styles.css
+index 96c8f31..b4d4a37 100644
+--- a/static/styles.css
++++ b/static/styles.css
+@@ -26,16 +26,18 @@ body {
+ .background-blur {
+     position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+     z-index: -1; overflow: hidden;
+-    /* Deep Teal Gradient Background */
+-    background: #F3F8F7; 
++    /* Green/teal tint background (disabled - sirf white chahiye, wapas laane ke liye niche wali line uncomment karo) */
++    /* background: #F3F8F7; */
++    background: #ffffff;
+ }
+ 
+-/* Background ke andar halki roshni (glowing blobs) taky premium feel aaye */
++/* Green/cyan glowing blobs DISABLED (sirf white background). Wapas laane ke liye is block ko uncomment karo.
+ .blob { position: absolute; border-radius: 50%; filter: blur(90px); }
+-.blob-1 { width: 600px; height: 600px; background: rgba(0, 229, 255, 0.15); top: -10%; right: -5%; } /* Cyan glow */
+-.blob-2 { width: 500px; height: 500px; background: rgba(255, 255, 255, 0.1); bottom: -10%; left: -5%; } /* White glow */
+-.blob-3 { width: 400px; height: 400px; background: rgba(0, 210, 255, 0.15); top: 40%; left: 30%; } /* Light cyan glow */
++.blob-1 { width: 600px; height: 600px; background: rgba(0, 229, 255, 0.15); top: -10%; right: -5%; }
++.blob-2 { width: 500px; height: 500px; background: rgba(255, 255, 255, 0.1); bottom: -10%; left: -5%; }
++.blob-3 { width: 400px; height: 400px; background: rgba(0, 210, 255, 0.15); top: 40%; left: 30%; }
+ .blob-4 { width: 300px; height: 300px; background: rgba(255, 255, 255, 0.15); bottom: 20%; right: 15%; }
++*/
+ 
+ 
+ /* Common Clean White Glass Panel Style (Matches the bottom area) */

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - Sisca AI</title>
+    <link rel="icon" type="image/png" href="/static/sisca_logo.svg">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">    
+
+    <style>
+        .auth-page-wrapper {
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0, 96, 100, 0.2);
+            border: 1px solid var(--glass-border);
+        }
+        .auth-tabs { display: flex; margin-bottom: 2rem; border-bottom: 2px solid rgba(69, 90, 100, 0.1); }
+        .auth-tab { flex: 1; text-align: center; padding: 1rem; cursor: pointer; font-weight: 600; color: var(--theme-secondary); transition: all 0.3s; }
+        .auth-tab.active { color: var(--theme-primary); border-bottom: 2px solid var(--theme-primary); margin-bottom: -2px; }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .back-btn { 
+            position: absolute; top: 20px; left: 20px; color: white; text-decoration: none; 
+            font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; 
+            z-index: 100; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .back-btn:hover { 
+            color: white; 
+            transform: scale(1.05) translateX(2px); 
+        }
+
+    </style>
+</head>
+<body>
+    <div class="background-blur">
+        <div class="blob blob-1"></div><div class="blob blob-2"></div>
+    </div>
+    
+    <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Sisca</a>
+
+    <div class="auth-page-wrapper">
+        <div class="auth-container">
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <img src="/static/sisca_logo.svg" width="60" alt="Logo">
+                <h2 style="color: var(--text-dark); margin-top: 10px; font-weight: 800;">Sisca AI</h2>
+            </div>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Login</div>
+                <div class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Sign Up</div>
+            </div>
+
+           <div id="formLogin" class="auth-form active">
+                <input type="email" id="loginEmail" placeholder="Email Address" class="auth-input">
+                
+                <div class="password-wrapper" style="margin-bottom: 0.5rem;">
+                    <input type="password" id="loginPassword" placeholder="Password" class="auth-input" style="margin-bottom: 0;">
+                    <i class="fas fa-eye toggle-password" onclick="togglePass('loginPassword', this)"></i>
+                </div>
+                
+             <div style="text-align: right; margin-bottom: 1rem;">
+                    <a href="#" onclick="showForgotForm()" style="color: #0284c7; font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: 0.3s;">Forget Password?</a>
+                </div>
+                
+                <button class="modal-submit-btn" onclick="submitLogin()">Login</button>
+            </div>
+
+            <div id="formSignup" class="auth-form">
+                <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                    <input type="text" id="signupFirstName" placeholder="First Name" class="auth-input" style="margin-bottom: 0;">
+                    <input type="text" id="signupLastName" placeholder="Last Name" class="auth-input" style="margin-bottom: 0;">
+                </div>
+                <input type="email" id="signupEmail" placeholder="Email Address" class="auth-input">
+                <div class="password-wrapper">
+                    <input type="password" id="signupPassword" placeholder="Create a Password" class="auth-input" style="margin-bottom: 0;">
+                    <i class="fas fa-eye toggle-password" onclick="togglePass('signupPassword', this)"></i>
+                </div>
+                <p style="font-size: 0.75rem; color: var(--theme-secondary); margin-bottom: 1rem; margin-top: 0.5rem; text-align: center;">
+                    Password must have 1 uppercase, 1 lowercase & 1 number.
+                </p>
+                <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                    <input type="text" id="signupOTP" placeholder="Enter 6-digit Code" class="auth-input" autocomplete="off" maxlength="6" style="margin-bottom: 0; flex: 1;">
+                    <button class="init-btn" id="sendOtpBtn" onclick="requestOTP()" style="margin-top: 0; white-space: nowrap; border-radius: 12px;">Send Code</button>
+                </div>
+                <button class="modal-submit-btn" onclick="submitSignup()">Sign Up</button>
+            </div>
+            <div id="formForgot" class="auth-form">
+                <h3 style="text-align: center; margin-bottom: 1.5rem; color: var(--text-dark);">Reset Password</h3>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+                    <input type="email" id="forgotEmail" placeholder="Enter Email Address" class="auth-input" style="margin-bottom: 0; flex: 1;">
+                    <button class="init-btn" id="sendForgotOtpBtn" onclick="requestForgotOTP()" style="margin-top: 0; white-space: nowrap; border-radius: 12px;">Send OTP</button>
+                </div>
+                
+                <input type="text" id="forgotOTP" autocomplete="off" placeholder="Enter 6-digit Code" class="auth-input" maxlength="6">
+                
+                <div class="password-wrapper" style="margin-bottom: 1rem;">
+                    <input type="password" id="forgotNewPassword" placeholder="New Password" class="auth-input" style="margin-bottom: 0;">
+                    <i class="fas fa-eye toggle-password" onclick="togglePass('forgotNewPassword', this)"></i>
+                </div>
+                
+                <div class="password-wrapper" style="margin-bottom: 1rem;">
+                    <input type="password" id="forgotConfirmPassword" placeholder="Confirm New Password" class="auth-input" style="margin-bottom: 0;">
+                    <i class="fas fa-eye toggle-password" onclick="togglePass('forgotConfirmPassword', this)"></i>
+                </div>
+                
+                <button class="modal-submit-btn" onclick="submitResetPassword()">Change Password</button>
+                
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" onclick="switchTab('login')" style="color: var(--theme-secondary); font-size: 0.85rem; font-weight: 600; text-decoration: none;">&larr; Back to Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+
+// ====== CUSTOM NOTIFICATION SYSTEM ======
+        function showNotification(message, type = 'info') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `custom-toast ${type}`;
+            
+            let iconClass = 'fas fa-info-circle';
+            if (type === 'success') iconClass = 'fas fa-check-circle';
+            if (type === 'error') iconClass = 'fas fa-exclamation-circle';
+
+            // Agar message me emoji ho to usay clean kar dega
+            let cleanMessage = message.replace('⚠️ ', '');
+
+            toast.innerHTML = `<i class="${iconClass}"></i> <span>${cleanMessage}</span>`;
+            container.appendChild(toast);
+
+            // 4 seconds ke baad slide-out karke remove ho jayega
+            setTimeout(() => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Default browser alert ko Override kar diya
+        window.alert = function(msg) {
+            let msgStr = String(msg);
+            let type = 'info';
+            let lowerMsg = msgStr.toLowerCase();
+            
+            // NAYA LOGIC: Pehle 'Success' check karein taake hamesha Green aaye
+            if (lowerMsg.includes('success') || lowerMsg.includes('thank you') || lowerMsg.includes('awesome')) {
+                type = 'success';
+            } else if (lowerMsg.includes('error') || lowerMsg.includes('failed') || lowerMsg.includes('invalid') || lowerMsg.includes('empty') || lowerMsg.includes('please login') || msgStr.includes('⚠️')) {
+                type = 'error';
+            }
+            
+            showNotification(msgStr, type);
+        };
+
+        // ========================================
+
+      // Tab Switching Logic (UPDATED)
+        function switchTab(tab) {
+            document.querySelector('.auth-tabs').style.display = 'flex'; // Tabs wapas show karein
+            if(document.getElementById('formForgot')) {
+                document.getElementById('formForgot').classList.remove('active'); // Forgot form hide karein
+            }
+            
+            document.getElementById('tabLogin').classList.remove('active');
+            document.getElementById('tabSignup').classList.remove('active');
+            document.getElementById('formLogin').classList.remove('active');
+            document.getElementById('formSignup').classList.remove('active');
+            
+            if (tab === 'login') {
+                document.getElementById('tabLogin').classList.add('active');
+                document.getElementById('formLogin').classList.add('active');
+            } else {
+                document.getElementById('tabSignup').classList.add('active');
+                document.getElementById('formSignup').classList.add('active');
+            }
+        }
+
+        // --- NAYA: Forgot Password Form Show Karne Ka Logic ---
+        function showForgotForm() {
+            document.querySelector('.auth-tabs').style.display = 'none'; // Tabs chupayen
+            document.getElementById('formLogin').classList.remove('active');
+            document.getElementById('formSignup').classList.remove('active');
+            document.getElementById('formForgot').classList.add('active'); // Forgot form dikhayen
+        }
+
+        function togglePass(inputId, icon) {
+            const passInput = document.getElementById(inputId);
+            passInput.type = passInput.type === 'password' ? 'text' : 'password';
+            icon.classList.toggle('fa-eye-slash');
+        }
+
+        async function requestOTP() {
+            const email = document.getElementById('signupEmail').value;
+            const btn = document.getElementById('sendOtpBtn');
+            if (!email) return alert("Please enter your email address first!");
+
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/send-otp', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    alert(data.error); btn.innerText = "Send Code"; btn.disabled = false;
+                } else {
+                    alert(data.message);
+                    let timeLeft = 30;
+                    btn.innerText = `Resend in ${timeLeft}s`;
+                    const timerId = setInterval(() => {
+                        timeLeft--; btn.innerText = `Resend in ${timeLeft}s`;
+                        if (timeLeft <= 0) { clearInterval(timerId); btn.innerText = "Resend Code"; btn.disabled = false; }
+                    }, 1000);
+                }
+            } catch (error) { alert("Network error"); btn.innerText = "Send Code"; btn.disabled = false; }
+        }
+
+        async function submitSignup() {
+            const payload = {
+                first_name: document.getElementById('signupFirstName').value,
+                last_name: document.getElementById('signupLastName').value,
+                email: document.getElementById('signupEmail').value,
+                otp: document.getElementById('signupOTP').value,
+                password: document.getElementById('signupPassword').value
+            };
+            
+            if(!payload.first_name || !payload.email || !payload.password || !payload.otp) return alert("Fill all fields!");
+
+            const res = await fetch('/api/signup', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            
+            if(data.error) alert(data.error);
+    else {
+        alert(data.message);
+        switchTab('login');
+        
+        // --- NAYI LINES: Signup ke saare boxes ko khali (reset) karein ---
+        document.getElementById('signupFirstName').value = "";
+        document.getElementById('signupLastName').value = "";
+        document.getElementById('signupEmail').value = "";
+        document.getElementById('signupPassword').value = "";
+        document.getElementById('signupOTP').value = "";
+        
+        document.getElementById('sendOtpBtn').innerText = "Send Code";
+        document.getElementById('sendOtpBtn').disabled = false;
+    }
+}
+
+        async function submitLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPassword').value;
+
+            // Submit button ko disable karna taaky user multiple clicks na karay
+            const loginBtn = document.querySelector('#formLogin .modal-submit-btn');
+            const originalText = loginBtn.innerText;
+            loginBtn.innerText = "Verifying...";
+            loginBtn.disabled = true;
+
+            if(!email || !pass) {
+                alert("Please fill all fields!");
+                loginBtn.innerText = originalText;
+                loginBtn.disabled = false;
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password: pass })
+                });
+
+                const data = await res.json();
+                
+                if(data.error) {
+                    alert(data.error);
+                    loginBtn.innerText = originalText;
+                    loginBtn.disabled = false;
+                } else {
+                    // Success! Data browser mein save karein
+                    localStorage.setItem('sisca_user', JSON.stringify({
+                        first_name: data.first_name,
+                        last_name: data.last_name,
+                        email: data.email,
+                        gmail_connected: data.gmail_connected // Backend jo token ka status bhejta hai
+                    }));
+                    
+                    // Button ko "Logged In" state dikhayen
+                    loginBtn.innerText = "Success! Redirecting...";
+                    
+                    // Bina kisi delay ke FORAN home page par le jayen!
+                    window.location.replace('/'); 
+                }
+            } catch(e) {
+                alert("Network Error!");
+                loginBtn.innerText = originalText;
+                loginBtn.disabled = false;
+            }
+        }
+
+        // ====== Open correct tab based on ?mode= in URL ======
+        (function () {
+            const mode = new URLSearchParams(window.location.search).get('mode');
+            if (mode === 'signup') switchTab('signup');
+            else switchTab('login');
+        })();
+
+        // ==========================================
+        // ENTER KEY LOGIC FOR AUTH PAGE
+        // ==========================================
+
+        // --- Login Form Enter Logic ---
+        document.getElementById('loginEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); document.getElementById('loginPassword').focus(); }
+        });
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); submitLogin(); }
+        });
+
+        // --- Signup Form Enter Logic ---
+        document.getElementById('signupFirstName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); document.getElementById('signupLastName').focus(); }
+        });
+        document.getElementById('signupLastName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); document.getElementById('signupEmail').focus(); }
+        });
+        document.getElementById('signupEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); document.getElementById('signupPassword').focus(); }
+        });
+        document.getElementById('signupPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); document.getElementById('signupOTP').focus(); }
+        });
+        document.getElementById('signupOTP').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); submitSignup(); }
+        });
+        
+// --- NAYA: Forgot Password API Calls ---
+        async function requestForgotOTP() {
+            const email = document.getElementById('forgotEmail').value;
+            const btn = document.getElementById('sendForgotOtpBtn');
+            if (!email) return alert("Please enter your email address!");
+
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/forgot-otp', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    alert(data.error); btn.innerText = "Send OTP"; btn.disabled = false;
+                } else {
+                    alert(data.message);
+                    let timeLeft = 30;
+                    btn.innerText = `Resend in ${timeLeft}s`;
+                    const timerId = setInterval(() => {
+                        timeLeft--; btn.innerText = `Resend in ${timeLeft}s`;
+                        if (timeLeft <= 0) { clearInterval(timerId); btn.innerText = "Resend OTP"; btn.disabled = false; }
+                    }, 1000);
+                }
+            } catch (error) { alert("Network error"); btn.innerText = "Send OTP"; btn.disabled = false; }
+        }
+
+        async function submitResetPassword() {
+            const email = document.getElementById('forgotEmail').value;
+            const otp = document.getElementById('forgotOTP').value;
+            const newPassword = document.getElementById('forgotNewPassword').value;
+            const confirmPassword = document.getElementById('forgotConfirmPassword').value;
+
+            if(!email || !otp || !newPassword || !confirmPassword) return alert("Fill all fields!");
+            if(newPassword !== confirmPassword) return alert("Passwords do not match!");
+
+            const res = await fetch('/api/reset-password', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ email, otp, new_password: newPassword })
+            });
+            const data = await res.json();
+            
+            if(data.error) alert(data.error);
+            else { 
+                alert(data.message); 
+                switchTab('login'); 
+                document.getElementById('forgotOTP').value = '';
+                document.getElementById('forgotNewPassword').value = '';
+                document.getElementById('forgotConfirmPassword').value = '';
+                document.getElementById('sendForgotOtpBtn').innerText = 'Send OTP';
+                document.getElementById('sendForgotOtpBtn').disabled = false;
+            }
+        }
+
+    </script>
+</body>
+</html>

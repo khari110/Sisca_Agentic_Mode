@@ -1,0 +1,1683 @@
+/* --- Core Styling & Modern Sage Theme (Deep Teal & Slate) --- */
+:root {
+    --bg-base: #ffffff; /* White background base */
+    --theme-primary: rgb(30, 158, 137); /* Primary Deep Teal */
+    --theme-secondary: #455A64; /* Secondary Slate Gray */
+    --theme-accent: rgb(30, 158, 137); /* Slightly lighter teal for accents */
+    --glass-border: rgba(69, 90, 100, 0.15); /* Slate border */
+    --text-dark: #1c282d; /* Very dark slate for readability */
+    --text-light: #ffffff;
+    --font-family: 'Inter', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-base);
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    color: var(--text-dark);
+}
+
+/* Light Sage/Slate Bokeh Background for Intelligent Vibe */
+/* --- Premium Teal Background --- */
+.background-blur {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    z-index: -1; overflow: hidden;
+    /* Green/teal tint background (disabled - sirf white chahiye, wapas laane ke liye niche wali line uncomment karo) */
+    /* background: #F3F8F7; */
+    background: #ffffff;
+}
+
+/* Green/cyan glowing blobs DISABLED (sirf white background). Wapas laane ke liye is block ko uncomment karo.
+.blob { position: absolute; border-radius: 50%; filter: blur(90px); }
+.blob-1 { width: 600px; height: 600px; background: rgba(0, 229, 255, 0.15); top: -10%; right: -5%; }
+.blob-2 { width: 500px; height: 500px; background: rgba(255, 255, 255, 0.1); bottom: -10%; left: -5%; }
+.blob-3 { width: 400px; height: 400px; background: rgba(0, 210, 255, 0.15); top: 40%; left: 30%; }
+.blob-4 { width: 300px; height: 300px; background: rgba(255, 255, 255, 0.15); bottom: 20%; right: 15%; }
+*/
+
+
+/* Common Clean White Glass Panel Style (Matches the bottom area) */
+.glass-panel {
+    /* Opacity ko 0.98 kar diya hai taake ye bilkul pure bright white lagay */
+    background: rgba(255, 255, 255, 0.98); 
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1), inset 0 0 15px rgba(255, 255, 255, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Locked Panels Visuals */
+
+.control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; text-align: center; }
+
+.control-item { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 0.5rem; 
+    font-size: 0.8rem; 
+    font-weight: 600; 
+    /* Text ko solid white se nikal kar 70% soft white kar diya he */
+    color: rgba(255, 255, 255, 0.7); 
+    transition: all 0.3s ease;
+}
+
+.control-item i { 
+    font-size: 1.5rem; 
+    color: rgba(255, 255, 255, 0.9); 
+}
+
+.control-item:not(.locked-item):hover {
+    color: #ffffff;
+}
+.control-item:not(.locked-item):hover i {
+    color: #ffffff;
+    transform: scale(1.08); /* Icon thora sa bara (pop) hoga */
+}
+.init-btn {
+    
+    background: var(--theme-primary); 
+    border: none; 
+    color: var(--text-light); 
+    padding: 0.8rem 0.8rem;
+    border-radius: 12px; 
+    font-weight: 600; 
+    font-size: 0.85rem; 
+    margin-top: 0.9rem;
+    margin-bottom: 0.08rem;
+    cursor: pointer; 
+    transition: background 0.3s, transform 0.1s;
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+}
+
+.init-btn:hover {
+    background: var(--theme-accent); 
+    transform: scale(0.98); /* Button ko halka sa chota karega jis se "press" hone ka effect aayega */
+}
+
+.chat-messages { flex: 1; scroll-behavior: smooth; }
+
+/* Chat Bubbles */
+.message { display: flex; gap: 1rem; max-width: 90%; animation: slide-in 0.3s ease-out; }
+@keyframes slide-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.message-avatar {
+    width: 32px; 
+    height: 32px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0; 
+    margin-top: auto;
+    margin-bottom: 0px;
+}
+
+.message-avatar img {
+    width: 32px; /*Size of Chat Logo*/
+    height: 32px;
+    object-fit: contain;
+}
+
+.message-content { padding: 0.8rem 1.2rem; font-size: 0.95rem; line-height: 1.5; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+
+/* Assistant Bubble (Light) */
+.assistant-message { align-self: flex-start; }
+.assistant-message .message-content { 
+    background: rgba(255, 255, 255, 0.9); 
+    backdrop-filter: blur(10px); 
+    border: 1px solid rgba(69, 90, 100, 0.15); 
+    border-radius: 20px 20px 20px 4px; 
+    color: var(--text-dark);
+}
+
+/* User Bubble (Deep Teal to Slate Gradient) */
+.user-message { align-self: flex-end; flex-direction: row-reverse; }
+.user-message .message-avatar { display: none; }
+.user-message .message-content { 
+    background: linear-gradient(135deg , var(--theme-primary),rgb(14, 172, 158)); 
+    color: var(--text-light); 
+    border-radius: 20px 20px 4px 20px; 
+    border: 1px solid rgba(255,255,255,0.1); 
+    box-shadow: 0 4px 15px rgba(0, 96, 100, 0.3); 
+}
+
+#imagePreviewContainer { position: absolute; bottom: 80px; left: 2rem; padding: 0.5rem; background: rgba(255, 255, 255, 0.95); border-radius: 1rem; }
+#imagePreview { max-height: 60px; border-radius: 0.5rem; }
+#removeImageBtn { position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; }
+
+.input-container-pill {
+    display: flex; align-items: center; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 16px; padding: 0.5rem; gap: 0.8rem;
+    box-shadow: 0 4px 15px rgba(69, 90, 100, 0.08); margin-bottom: 0.5rem;
+}
+#messageInput { flex: 1; border: none; background: transparent; outline: none; font-size: 0.95rem; padding-left: 0.5rem; color: var(--text-dark); }
+.action-icon { background: transparent; border: none; color: rgba(69, 90, 100, 0.7); font-size: 1.2rem; cursor: pointer; }
+
+/* Mic Glow matching the Sage theme */
+
+.audio-waveform { align-items: center; gap: 3px; height: 18px; opacity: 0.8; }
+.audio-waveform span { display: block; width: 3px; height: 100%; background: var(--theme-accent); border-radius: 2px; animation: equalize 1s infinite ease-in-out; }
+.send-btn { background: transparent; color: rgba(69, 90, 100, 0.7); border: none; cursor: pointer; font-size: 1.1rem; padding: 0 0.5rem; }
+.send-btn:hover { color: var(--theme-primary); }
+
+/* System Stats at bottom right */
+
+/* Typing Dots */
+.typing-dots { display: flex; gap: 4px; padding: 4px 0; }
+.typing-dots span { width: 6px; height: 6px; background: var(--theme-primary); border-radius: 50%; opacity: 0.6; animation: typing-bounce 1.4s infinite ease-in-out both; }
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+/* Scrollbar */
+/* Scrollbar (Hidden but fully scrollable) */
+.chat-messages::-webkit-scrollbar { 
+    display: none; /* Chrome, Safari aur Opera k liye hide karega */
+}
+.chat-messages { 
+    -ms-overflow-style: none;  /* IE aur Edge k liye */
+    scrollbar-width: none;     /* Firefox k liye */
+}
+
+/* Responsive adjustments */
+/* --- Mobile Blocker Styling --- */
+#mobile-blocker {
+    display: none; /* By default hidden rahega */
+}
+
+/* Jab screen 1024px se choti hogi (Mobile & Tablet) */
+@media (max-width: 1024px) {
+    /* Poori website ko hide kar do */
+.background-blur {
+        display: none !important;
+    }
+
+    /* Sirf blocker screen dikhao */
+    #mobile-blocker {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: linear-gradient(135deg, var(--theme-primary), #00363a);
+        color: white;
+        text-align: center;
+        padding: 2.5rem;
+        z-index: 99999;
+        font-family: var(--font-family);
+    }
+
+    #mobile-blocker h1 {
+        font-size: 2.2rem;
+        margin-bottom: 1.2rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+
+    #mobile-blocker p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        opacity: 0.9;
+        max-width: 400px;
+    }
+}
+/* --- Large Mic Button in Grid Box --- */
+
+/* --- Enhanced Organic Energy Core (Fixed for Light Background) --- */
+
+.energy-core-wrapper {
+    position: relative;
+    width: 105px;
+    height: 105px;
+    margin-top: -0.3rem;
+    margin-bottom: 0.1rem; /* Pehle 1.5rem tha, isko kam kar diya */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Ab ye shapes light background par proper nazar aayengi */
+.core-layer {
+    position: absolute;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    animation: organicMorph 6s linear infinite;
+    transition: all 0.4s ease;
+    opacity: 0.85;
+    filter: blur(3px); /* Liquid merge effect */
+}
+
+.layer-1 {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--theme-primary), var(--theme-accent));
+    animation-duration: 6s;
+}
+
+.layer-2 {
+    width: 85%; height: 85%;
+    background: linear-gradient(135deg, #06beb6, #48b1bf);
+    animation-duration: 8s;
+    animation-direction: reverse;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+.layer-3 {
+    width: 70%; height: 70%;
+    background: linear-gradient(135deg, #00e5ff, var(--theme-accent));
+    animation-duration: 5s;
+}
+
+/* Darmiyan wala glowing dot (Ab bilkul soft aur natural hoga) */
+.core-center {
+    position: absolute;
+    width: 26px; /* Size thora bara kiya hai taky soft glow theek se nazar aaye */
+    height: 26px;
+    /* Solid white ki jagah radial-gradient lagaya hai jo kinaroon se transparent ho jata hai */
+    background: radial-gradient(circle, #ffffff 15%, rgba(0, 229, 255, 0.8) 50%, transparent 100%);
+    border-radius: 50%;
+    /* Box shadows ko mazeed soft aur phaila hua banaya hai */
+    box-shadow: 
+        0 0 12px 4px rgba(255, 255, 255, 0.9), 
+        0 0 30px 12px rgba(0, 229, 255, 0.6),
+        0 0 50px 20px rgba(0, 96, 100, 0.4);
+    animation: coreBeat 2s infinite ease-in-out alternate;
+    transition: all 0.3s ease;
+    z-index: 5;
+    filter: blur(1px); /* Edges ko mazeed soft karne ke liye */
+    mix-blend-mode: screen; /* Background waves ke sath naturally mix hone ke liye */
+}
+
+/* === ACTIVE STATE: Jab Mic on hoga === */
+.energy-core-wrapper.listening .core-layer {
+    animation-duration: 2.5s; /* Spinning fast */
+    transform: scale(1.2); /* Expand hoga */
+    filter: blur(5px) brightness(1.2);
+}
+
+.energy-core-wrapper.listening .core-center {
+    /* Active hone par roshni mazeed phail jayegi aur glow strong hoga */
+    box-shadow: 
+        0 0 20px 8px rgba(255, 255, 255, 1), 
+        0 0 45px 18px rgba(0, 229, 255, 0.8),
+        0 0 70px 30px rgba(0, 96, 100, 0.6);
+    animation-duration: 0.5s;
+    transform: scale(1.3);
+}
+/* --- NAYI LINE: Missing Animations Wapas Add Ki Gayi Hain --- */
+@keyframes organicMorph {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes coreBeat {
+    0% { transform: scale(0.9); opacity: 0.8; }
+    100% { transform: scale(1.2); opacity: 1; }
+}
+
+/* --- Modals / Popups Styling --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1200;               /* Sisca toggle button (1100) aur sidebar (1000) ke upar */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    /* NAYA: Blur hata kar deep dark shadow (overlay) laga diya hai */
+    background-color: rgba(15, 25, 30, 0.75); 
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: var(--bg-base);
+    padding: 2rem;
+    border-radius: 1.5rem;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 20px 40px rgba(0, 96, 100, 0.2);
+    position: relative;
+    animation: modalSlideIn 0.3s ease-out forwards;
+    border: 1px solid var(--glass-border);
+}
+
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.8rem;
+    color: var(--theme-secondary);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover { color: #ef4444; }
+
+.modal h2 {
+    color: var(--theme-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+}
+
+.modal p {
+    color: var(--theme-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.modal textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid rgba(69, 90, 100, 0.2);
+    border-radius: 12px;
+    font-family: var(--font-family);
+    resize: none;
+    outline: none;
+    margin-bottom: 1rem;
+    transition: border-color 0.3s;
+}
+
+.modal textarea:focus { border-color: var(--theme-primary); }
+
+.modal-submit-btn {
+    background: var(--theme-primary);
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    width: 100%;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+}
+
+.modal-submit-btn:hover { background: var(--theme-accent); transform: scale(0.98); }
+
+.instructions-list { list-style: none; padding: 0; }
+.instructions-list li {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(69, 90, 100, 0.1);
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+.instructions-list li:last-child { border-bottom: none; }
+.instructions-list li i { color: var(--theme-primary); width: 20px; margin-right: 8px; }
+.instructions-list li strong { color: var(--theme-primary); }
+/* --- Naya Logo Panel --- */
+
+.brand-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem; 
+    /* Float animation wese hi chalegi */
+    animation: gentleFloat 4s ease-in-out infinite;
+    /* Pop-out ke liye scale use karenge taake float animation disturb na ho */
+    transition: scale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.brand-logo {
+    width: 140px; /* Logo ka size thora bara kiya hai */
+    height: 140px;
+    object-fit: contain;
+    /* 3D Pop-out Shadow */
+    filter: drop-shadow(0 15px 25px rgba(0, 96, 100, 0.4)); 
+}
+
+.brand-wrapper h2 {
+    font-size: 2.8rem;
+    color: var(--text-dark); /* Purana dark color */
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin: 0;
+    text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Greeting ("Welcome to Sisca, ...") normal weight me */
+.brand-wrapper h2#sisca-greeting {
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.brand-wrapper h4 {
+    margin: 0; /* Slogan ka extra gap khatam karne ke liye */
+    color: var(--theme-secondary); /* Slogan ka color thora professional karne ke liye (optional) */
+    font-weight: 500;
+}
+
+@keyframes gentleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); } /* Halka sa upar move karega */
+}
+
+/* --- Right Panel Long Content Routing --- */
+.right-panel-text {
+    white-space: normal;
+    line-height: 1.65;
+}
+.right-panel-text h2, .right-panel-text h3, .right-panel-text h4 {
+    color: var(--theme-primary);
+    margin: 1.2rem 0 0.4rem;
+    line-height: 1.3;
+}
+.right-panel-text h2 { font-size: 1.5rem; }
+.right-panel-text h3 { font-size: 1.25rem; }
+.right-panel-text h4 { font-size: 1.15rem; }
+.right-panel-text ul { margin: 0.3rem 0 0.3rem 1.2rem; padding: 0; }
+.right-panel-text li { margin: 0.3rem 0; }
+.rp-gap { height: 0.8rem; }
+
+/* Close Panel Button */
+.close-panel-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(69, 90, 100, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 35px; height: 35px;
+    cursor: pointer;
+    color: var(--theme-secondary);
+    transition: all 0.3s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    z-index: 10;
+}
+.close-panel-btn:hover {
+    background: #ef4444; color: white; transform: rotate(90deg);
+}
+
+/* Animations (Holographic Tech Fade) */
+.brand-wrapper.hide-tech {
+    animation: techFadeOut 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    pointer-events: none;
+}
+
+.brand-wrapper.show-tech {
+    /* Pehle techFadeIn chalega, aur 0.5 second ke baad wapas gentleFloat shuru ho jayega */
+    animation: techFadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards, gentleFloat 4s ease-in-out 0.5s infinite;
+}
+
+@keyframes techFadeOut {
+    0% { opacity: 1; filter: blur(0); transform: scale(1); }
+    100% { opacity: 0; filter: blur(15px); transform: scale(1.1); visibility: hidden; }
+}
+
+@keyframes techFadeIn {
+    0% { opacity: 0; filter: blur(15px); transform: translateY(15px); }
+    100% { opacity: 1; filter: blur(0); transform: translateY(0); visibility: visible; }
+}
+
+/* Half-person Logo (Avatar) */
+.auth-profile {
+    width: 75px;  
+    height: 75px; 
+    background: linear-gradient(135deg, rgba(0, 131, 143, 0.1), rgba(0, 96, 100, 0.05));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.3rem; 
+    color: var(--theme-primary);
+    border: 2px solid rgba(0, 131, 143, 0.2);
+    box-shadow: inset 0 0 10px rgba(0, 131, 143, 0.1);
+    transition: all 0.3s ease;
+    
+    /* BUG FIX: Margin ko hamesha same rakhein taake panel ki height shrink/expand na ho */
+    margin-top: 0rem !important; 
+    margin-bottom: 0.5rem !important; 
+}
+
+.auth-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--theme-secondary);
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.5px;
+}
+
+/* Login / Signup Buttons */
+.auth-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 0.6rem;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: auto !important; /* Button ko mukammal bottom par dhakel dega */
+}
+
+.auth-btn {
+    flex: 1; /* NAYI LINE: Dono buttons ko bilkul barabar (equal) size dega */
+    white-space: nowrap; /* NAYI LINE: "Sign Up" ko 2 lines mein tootne se rokega */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(69, 90, 100, 0.2);
+    color: var(--theme-secondary);
+    padding: 0.45rem 0.5rem; /* Slim aur compact padding */
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(69, 90, 100, 0.2);
+    border-radius: 12px;
+    font-family: var(--font-family);
+    outline: none;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    transition: border-color 0.3s;
+}
+
+.auth-input:focus {
+    border-color: var(--theme-primary);
+    box-shadow: 0 0 5px rgba(0, 96, 100, 0.2);
+}
+
+.auth-btn i {
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+/* Sign Up button ko thora mukhtalif color diya hai */
+.auth-btn.signup-btn {
+    background: rgba(0, 96, 100, 0.05);
+    color: var(--theme-primary);
+    border-color: rgba(0, 96, 100, 0.2);
+}
+
+/* --- AI Disclaimer Notice --- */
+.ai-disclaimer {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--theme-secondary);
+    opacity: 0.85;
+    margin-top: 0.8rem;
+    margin-bottom: 0.3;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.ai-disclaimer strong {
+    color: var(--theme-primary);
+    font-weight: 600;
+    opacity: 1;
+}
+
+/* "Beta" ka color "Unexpected Errors" jaisa (sirf color, weight normal) */
+.ai-disclaimer .ai-disclaimer-hl {
+    color: var(--theme-primary);
+}
+
+/* "Unexpected Errors" clickable -> feedback box */
+.ai-disclaimer .ai-disclaimer-link {
+    cursor: pointer;
+}
+.ai-disclaimer .ai-disclaimer-link:hover,
+.ai-disclaimer .ai-disclaimer-link:focus-visible {
+    text-decoration: underline;
+    outline: none;
+}
+
+/* --- Password Wrapper & Eye Icon --- */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper .auth-input {
+    padding-right: 40px; /* Text icon ke neechay na jaye */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--theme-secondary);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.toggle-password:hover {
+    opacity: 1;
+    color: var(--theme-primary);
+}
+
+/* --- BUTTON ALIGNMENT FIXES --- */
+/* Containers ko bottom mein set karne ke liye */
+.auth-panel-actions, .auth-buttons {
+    margin-top: auto !important; 
+    width: 100%;
+    padding-top: 1rem;
+}
+
+/* WAPAS PURANI POSITION: Upar aur Neechay (Vertical Stack) */
+.auth-panel-actions {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 0.4rem; 
+    width: 100%;
+}
+
+/* --- Logout Button Style (Talk with SISCA ke barabar) --- */
+#logoutBtn {
+    padding: 0.5rem 1.5rem !important; /* Size increased */
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem !important; 
+    width: auto !important; /* Content ke hisaab se width lega */
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    box-shadow: none !important;
+}
+
+/* --- Logout Button Styles --- */
+#logoutBtn:hover {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3) !important;
+}
+
+.auth-btn:hover {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: var(--theme-primary);
+    color: var(--theme-primary);
+}
+
+.connected-state {
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+/* =========================================
+   CUSTOM TOAST NOTIFICATIONS
+   ========================================= */
+#toast-container {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.custom-toast {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-left: 4px solid var(--theme-primary);
+    padding: 1rem 1.2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 96, 100, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 280px;
+    max-width: 380px;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transform: translateX(120%);
+    animation: slideInToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transition: all 0.3s ease;
+}
+
+.custom-toast span { line-height: 1.4; }
+.custom-toast i { font-size: 1.4rem; flex-shrink: 0; }
+
+/* Themes for different alerts */
+.custom-toast.error { border-left-color: #ef4444; }
+.custom-toast.error i { color: #ef4444; }
+
+.custom-toast.success { border-left-color: #10b981; }
+.custom-toast.success i { color: #10b981; }
+
+.custom-toast.info { border-left-color: #3b82f6; }
+.custom-toast.info i { color: #3b82f6; }
+
+.custom-toast.fade-out {
+    opacity: 0;
+    transform: translateX(120%);
+}
+
+@keyframes slideInToast {
+    from { transform: translateX(120%); }
+    to { transform: translateX(0); }
+}
+
+/* =========================================
+   TEXT SELECTION / COPY PROTECTION LOGIC
+   ========================================= */
+/* 1. Global level par poori website ka text select/copy hona band karein */
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* 2. Sirf in makhsoos hisson (Chat, Right Panel, Profile Text, aur Inputs) ko copyable banayen */
+.chat-messages, 
+.auth-text,
+.ai-disclaimer, /* NAYI LINE: Disclaimer ko copyable banane ke liye */
+input, 
+textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* 3. Ehtiyatan tamaam buttons aur clickable icons ko strictly un-selectable kar dein */
+button, 
+.init-btn, 
+.auth-btn, 
+.control-item, 
+.close-btn,
+.brand-wrapper,
+#actualConnectBtn {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+/* =========================================
+   AGENT MODE TOGGLE ACTIVE STATE
+========================================= */
+
+/* YEH BLOCK ZAROORI HAI: Yeh theek us hole ke peechay Green Color bharega */
+
+/* =========================================
+   MODE SELECTOR STYLING (Fast vs Research)
+========================================= */
+.mode-selector-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-right: 0.5rem;
+}
+
+.mode-selector {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent; /* Default background transparent kar diya */
+    border: 1px solid transparent; /* Default border bhi invisible kar diya */
+    border-radius: 15px; 
+    padding: 0.25rem 1.0rem 0.25rem 0.5rem; 
+    font-size: 0.75rem; 
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+    font-family: var(--font-family);
+    transition: all 0.3s ease; /* Hover ko smooth banane ke liye thora time barhaya */
+}
+
+.mode-selector:hover {
+    background: rgba(240, 242, 245, 0.9); /* Hover par soft background show hoga */
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Hover par halka sa border show hoga */
+}
+
+.mode-selector:focus {
+    outline: none;
+    border-color: var(--theme-primary);
+    background: rgba(240, 242, 245, 0.9); /* Focus hone par bhi background show hoga */
+}
+
+.dropdown-icon {
+    position: absolute;
+    right: 12px; /* Icon ko thora right edge ki taraf shift kiya */
+    font-size: 0.65rem; 
+    color: var(--text-dark);
+    pointer-events: none; 
+    opacity: 0.8;
+}
+/* =========================================
+   MODAL CLOSING ANIMATION (Premium Zoom-Out)
+========================================= */
+.modal-closing {
+    /* Snappy aur smooth exit ke liye timing 0.2s kardi hai */
+    animation: modalScaleOut 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important; 
+}
+
+@keyframes modalScaleOut {
+    0% { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+    100% { 
+        opacity: 0; 
+        transform: scale(0.92); /* Halka sa peeche (shrink) hoga */
+    }
+}
+
+/* =========================================
+   LOCKED INPUT PLACEHOLDER STYLING
+========================================= */
+.locked-input::placeholder {
+    font-style: italic !important;
+    opacity: 0.8;
+}
+
+/* =========================================
+   CUSTOM DROPDOWN MENU STYLING
+========================================= */
+.custom-select-wrapper {
+    position: relative;
+    user-select: none;
+}
+
+.custom-select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 90px; /* Width thori increase ki taake 'Research' easily fit ho */
+    padding-right: 1.6rem; /* Right side par text aur icon ke darmiyan extra gap add kiya */
+}
+
+.custom-select-menu {
+    position: absolute;
+    bottom: 120%; /* Chat bar ke upar open hoga */
+    left: 0;
+    width: 120px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 96, 100, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 96, 100, 0.15);
+    overflow: hidden;
+    display: none; /* Default hidden */
+    flex-direction: column;
+    z-index: 100;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Jab dropdown open ho */
+.custom-select-menu.show {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.custom-option {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--theme-secondary);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.custom-option:hover {
+    background: rgba(0, 96, 100, 0.05);
+    color: var(--theme-primary);
+}
+
+.custom-option.selected {
+    background: rgba(0, 96, 100, 0.08);
+    color: var(--theme-primary);
+    font-weight: 700;
+}
+
+/* =========================================
+   VISUALS MODE TOGGLE ACTIVE STATE
+========================================= */
+.control-item.visuals-active i {
+    color: #e0e7e5 !important; 
+    position: relative;
+    z-index: 2;
+}
+
+.control-item.visuals-active i::after {
+    content: '';
+    position: absolute;
+    background-color: #10b981; /* NAYA: Green Color (Matches Connected Button) */
+    width: 0.5em; 
+    height: 0.5em;
+    border-radius: 50%;
+    top: 50%;
+    right: 0.08em; 
+    transform: translateY(-50%);
+    z-index: -1;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.8); /* NAYA: Green Glow Shadow */
+}
+
+.control-item.visuals-active span {
+    color: #10b981; /* NAYA: Green Text */
+    font-weight: 700;
+
+
+}
+
+/* =========================================
+   SIDEBAR & TOGGLE STYLING
+========================================= */
+.sidebar-toggle-btn {
+    --toggle-box-inset: 3px;     /* hover box ka size: button 42px - 2*3px = 36px (bara/chota karna ho to yahi badlein) */
+    position: fixed;
+    top: 25px;
+    left: 20px;
+    z-index: 1100;               /* sidebar (1000) ke upar, taake khulne ke baad bhi hover/click kaam kare */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;                 /* click area wahi rehta hai; sirf dikhne wala box chota hai */
+    height: 42px;
+    padding: 0;
+    border: none;
+    border-radius: 14px;
+    background: transparent;
+    box-shadow: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Light-green box: default me chhupa hua, sirf hover par ya click (pinned = .active) ke baad dikhta hai */
+.sidebar-toggle-btn::before {
+    content: "";
+    position: absolute;
+    inset: var(--toggle-box-inset);
+    z-index: -1;                 /* logo ke peeche */
+    border-radius: 12px;
+    background: rgba(30, 158, 137, 0.12);
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    pointer-events: none;
+}
+.sidebar-toggle-btn:hover::before,
+.sidebar-toggle-btn.active::before { opacity: 1; transform: scale(1); }
+.sidebar-toggle-btn:focus-visible { outline: 2px solid #1e9e89; outline-offset: 2px; }
+
+.sidebar-toggle-logo {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--left-panel-w);
+    height: 100vh;
+    z-index: 1000;
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid rgba(0, 96, 100, 0.12);
+    box-shadow: 12px 0 40px rgba(0, 96, 100, 0.10);
+    padding: 0 1.5rem 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.98);
+
+    /* Closed state: right panel jaisa slide + fade (bounce nahi) */
+    opacity: 0;
+    transform: translateX(-40px);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+                opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+                visibility 0s linear 0.4s;
+}
+
+.sidebar.open {
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s, 0s, 0s;
+}
+
+.sidebar-divider {
+    border: 0;
+    height: 1px;
+    background: rgba(69, 90, 100, 0.15);
+    margin: 0.5rem 0;
+}
+
+.sidebar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.sidebar-section .control-grid .control-item span {
+    color: var(--theme-secondary);
+}
+.sidebar-section .control-grid .control-item i {
+    color: var(--theme-primary);
+}
+
+/* =========================================
+   CENTERED MINIMAL REDESIGN (Let's Noodle Style)
+========================================= */
+
+/* Replace dark background with frosted light color */
+.solid-light-bg {
+    position: fixed;
+    top: 0; left: 0; 
+    width: 100vw; height: 100vh;
+    background: #f2f6f7; /* Matches the color of your old right glass panel */
+    z-index: -2;
+}
+
+/* Centered Main Layout */
+.centered-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+/* Constrained Chat Box Size */
+.chat-section-centered {
+    width: 100%;
+    max-width: 650px; /* Makes the chat box smaller like Let's Noodle */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.input-area-centered {
+    width: 100%;
+    position: relative;
+}
+
+.shadow-pill {
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 96, 100, 0.1) !important;
+    box-shadow: 0 10px 30px rgba(0, 96, 100, 0.05) !important;
+    padding: 0.8rem 1.2rem !important;
+    border-radius: 20px !important;
+}
+
+/* Chat Messages Scrolling Constraint */
+.chat-messages {
+    width: 100%;
+    max-height: 45vh; /* Prevents messages from pushing the chat box offscreen */
+    overflow-y: auto;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 1rem;
+}
+
+/* Minimal Top Navigation */
+.minimal-top-nav {
+    position: fixed;
+    top: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 100;
+}
+
+/* Convert Old Right Panel into a Centered Popup Overlay */
+.document-overlay {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -45%) scale(0.95);
+    width: 90%; 
+    max-width: 900px; 
+    height: 80vh;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0,96,100,0.1);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    padding: 3.5rem 3rem;
+    overflow-y: auto;
+    opacity: 0; 
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: 500;
+}
+
+.document-overlay.show {
+    opacity: 1; 
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.minimal-top-nav .auth-btn {
+    background: #1e9e89 !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 0.6rem 1.4rem !important;
+    border-radius: 30px !important;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(30, 158, 137, 0.3) !important;
+    transition: all 0.3s ease;
+}
+
+.minimal-top-nav .auth-btn:hover {
+    background: #178270 !important;
+    transform: translateY(-1px), translateX(-5px);
+    box-shadow: 0 6px 15px rgba(30, 158, 137, 0.4) !important;
+}
+
+
+/* ===== Research Side Panel (docked to the right) ===== */
+:root {
+    /* Right panel kabhi screen ke 40% se zyada nahi khulta: default 40vw, user drag kare tab bhi 40vw par cap
+       (CSS-level cap hai, isliye JS load hone se pehle / purani saved width par bhi lagu rehta hai) */
+    --side-panel-max: 40vw;
+    --side-panel-w: min(var(--side-panel-user-w, min(var(--side-panel-max), 720px)), var(--side-panel-max));   /* default: 40vw, lekin 720px se zyada nahi */
+}
+
+.document-overlay.side-panel {
+    top: 0; right: 0; left: auto;
+    width: var(--side-panel-w);
+    max-width: none;
+    height: 100vh;
+    border-radius: 0;
+    border: none;
+    border-left: 1px solid rgba(0, 96, 100, 0.12);
+    box-shadow: -12px 0 40px rgba(0, 96, 100, 0.10);
+    padding: 3.5rem 2rem 2rem;
+    transform: translateX(40px);
+}
+.document-overlay.side-panel.show { transform: translateX(0); }
+
+/* Chat area panel ke saath left me shift ho jaye */
+.centered-layout {
+    transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+                margin-left 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+body:has(.document-overlay.side-panel.show) .centered-layout {
+    width: calc(100vw - var(--side-panel-w));
+}
+
+@media (max-width: 900px) {
+    .document-overlay.side-panel { width: 100vw; }
+    body:has(.document-overlay.side-panel.show) .centered-layout { width: 100vw; }
+}
+/* ===== Left Sidebar: right panel ki tarah docked + chat ko shift karta hai ===== */
+:root { --left-panel-w: 320px; }
+
+@media (min-width: 901px) {
+    body:has(.sidebar.open) .centered-layout {
+        margin-left: var(--left-panel-w);
+        width: calc(100vw - var(--left-panel-w));
+    }
+    /* Dono panels khule hon to right panel thora patla taake chat ke liye jagah bachay */
+    body:has(.sidebar.open):has(.document-overlay.side-panel.show) {
+        --side-panel-w: min(var(--side-panel-user-w, min(38vw, 620px)), var(--side-panel-max));
+    }
+    body:has(.sidebar.open):has(.document-overlay.side-panel.show) .centered-layout {
+        margin-left: var(--left-panel-w);
+        width: calc(100vw - var(--left-panel-w) - var(--side-panel-w));
+    }
+}
+
+@media (max-width: 900px) {
+    :root { --left-panel-w: min(320px, 85vw); }
+}
+
+/* ===== Sisca's PC: loading screen (VNC ready hone tak raw noVNC nahi dikhta) ===== */
+#virtualScreenContent {
+    --pc-accent: rgb(30, 158, 137);        /* main color */
+    --pc-accent-dark: rgb(21, 117, 101);   /* chhota text (readability ke liye gehra shade) */
+    --pc-ink: #1f2d2b;
+    --pc-muted: #5f6f6c;
+}
+.pc-header {
+    height: 38px; box-sizing: border-box;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 15px; background: var(--pc-accent);
+    color: #fff; font-size: 0.85rem; font-weight: 600;
+}
+.pc-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em;
+    padding: 3px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.14);
+}
+.pc-dot { width: 7px; height: 7px; border-radius: 50%; background: #ffb74d; animation: pcPulse 1.4s ease-in-out infinite; }
+.pc-badge.live .pc-dot { background: #69f0ae; }
+
+.pc-frame { opacity: 0; transition: opacity 0.5s ease; background: #ffffff; }
+.pc-frame.ready { opacity: 1; }
+
+/* Close (X) button in header + floating sidebar-icon button to re-open */
+.pc-header-right { display: inline-flex; align-items: center; gap: 8px; }
+.pc-hide-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; padding: 0; border: none; border-radius: 50%; cursor: pointer;
+    font-size: 0.85rem; color: #fff; background: rgba(255, 255, 255, 0.22);
+    transition: all 0.3s;
+}
+.pc-hide-btn:hover { background: #ef4444; color: #fff; transform: rotate(90deg); }
+.pc-hide-btn:focus-visible { outline: 2px solid #1e9e89; outline-offset: 2px; }
+
+
+/* Stage: plain white top / 16:9 live screen / plain white bottom.
+   Frame 16:9 hai (1280x720), isliye noVNC ke andar black bars nahi aate. */
+.pc-stage {
+    position: absolute; inset: 38px 0 0 0;
+    display: flex; flex-direction: column; align-items: center;
+    background: #ffffff;
+}
+/* .pc-screen = 16:9 box (frame + shield). Sizing pehle iframe par thi, ab wrapper par */
+.pc-screen {
+    position: relative; flex: 0 0 auto;
+    width: min(100%, calc((100vh - 38px - 150px) * 16 / 9));
+    aspect-ratio: 16 / 9;
+}
+.pc-screen .pc-frame { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border: none; }
+/* Transparent shield: iframe ke upar, koi icon/rang nahi. Click, double-click, wheel, touch sab yahin rukte hain */
+.pc-shield { position: absolute; inset: 0; z-index: 2; background: transparent; cursor: default; touch-action: none; }
+.pc-shield[hidden] { display: none; }
+
+.pc-zone { flex: 1 1 0; min-height: 0; width: 100%; background: #ffffff; }
+.pc-zone-bottom { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 18px 16px 0; box-sizing: border-box; gap: 10px; }
+.pc-control-btn {
+    min-width: 168px; height: 42px; padding: 0 22px; border: none; border-radius: 12px; cursor: pointer;
+    font: inherit; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.01em;
+    color: #fff; background: var(--pc-accent);
+    box-shadow: 0 4px 12px rgba(30, 158, 137, 0.28);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.pc-control-btn:hover { background: rgb(23, 130, 112); }
+.pc-control-btn:active { transform: translateY(1px); }
+.pc-control-btn:focus-visible { outline: 2px solid var(--pc-accent); outline-offset: 3px; }
+/* Control user ke paas ho to button outline style (Release) */
+.pc-control-btn.active { background: #fff; color: var(--pc-accent-dark); box-shadow: inset 0 0 0 2px var(--pc-accent); }
+.pc-control-btn.active:hover { background: #f3faf8; }
+.pc-control-hint { margin: 0; font-size: 0.78rem; line-height: 1.4; color: var(--pc-muted); text-align: center; }
+
+.pc-loader {
+    position: absolute; inset: 38px 0 0 0; z-index: 5;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; box-sizing: border-box; text-align: center; color: var(--pc-ink);
+    background: #ffffff;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.pc-loader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+.pc-loader-inner { width: 100%; max-width: 440px; }
+.pc-loader h3 { margin: 18px 0 4px; font-size: 1.15rem; font-weight: 700; color: var(--pc-ink); }
+.pc-loader p { margin: 0 0 22px; font-size: 0.85rem; color: var(--pc-muted); }
+
+.pc-orb { position: relative; width: 84px; height: 84px; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--pc-accent); }
+.pc-orb span { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(30, 158, 137, 0.55); animation: pcRing 2.4s ease-out infinite; }
+.pc-orb span:nth-child(2) { animation-delay: 0.8s; }
+.pc-orb span:nth-child(3) { animation-delay: 1.6s; }
+
+.pc-stages { list-style: none; margin: 0 auto 22px; padding: 0; display: inline-block; text-align: left; }
+.pc-stages li { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 0.85rem; color: #8c9b98; transition: color 0.3s ease; }
+.pc-stages li i { width: 18px; height: 18px; border-radius: 50%; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; font-size: 0.6rem; border: 1.5px solid #cfd8d6; color: transparent; }
+.pc-stages li.active { color: var(--pc-ink); font-weight: 600; }
+.pc-stages li.active i { border-color: var(--pc-accent); border-top-color: transparent; animation: pcSpin 0.9s linear infinite; }
+.pc-stages li.done { color: #3d504c; }
+.pc-stages li.done i { background: var(--pc-accent); border-color: var(--pc-accent); color: #fff; }
+
+.pc-tip { min-height: 96px; padding: 14px 16px; border-radius: 14px; background: #f3faf8; border: 1px solid rgba(30, 158, 137, 0.22); transition: opacity 0.35s ease, transform 0.35s ease; }
+.pc-tip.swap { opacity: 0; transform: translateY(6px); }
+.pc-tip-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pc-accent-dark); margin-bottom: 12px; }
+.pc-wf { display: flex; align-items: flex-start; justify-content: center; gap: 6px; flex-wrap: wrap; }
+.pc-wf-node { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 74px; font-size: 0.68rem; color: #3d504c; animation: pcPop 0.5s both; animation-delay: calc(var(--i) * 0.22s); }
+.pc-wf-node i { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #fff; background: var(--pc-accent); box-shadow: 0 4px 12px rgba(30, 158, 137, 0.3); }
+.pc-wf-arrow { margin-top: 13px; font-size: 0.7rem; color: var(--pc-accent); animation: pcPop 0.5s both; animation-delay: calc(var(--i) * 0.22s); }
+.pc-quote { margin: 0; font-size: 0.95rem; line-height: 1.5; font-style: italic; color: var(--pc-ink); }
+.pc-quote-by { margin-top: 8px; font-size: 0.78rem; font-weight: 600; color: var(--pc-accent-dark); }
+
+@keyframes pcRing { 0% { transform: scale(0.55); opacity: 0.9; } 100% { transform: scale(1.5); opacity: 0; } }
+@keyframes pcSpin { to { transform: rotate(360deg); } }
+@keyframes pcPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes pcPop { from { opacity: 0; transform: translateY(8px) scale(0.9); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+    .pc-orb span, .pc-dot, .pc-stages li.active i, .pc-wf-node, .pc-wf-arrow { animation: none; }
+    .pc-frame, .pc-loader, .pc-tip { transition: none; }
+}
+
+
+/* ===== Permanent right-panel toggle (top-right, transparent) ===== */
+.panel-toggle-btn {
+    position: fixed; top: 25px; right: 20px; z-index: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 42px; height: 42px; padding: 0; border: none; border-radius: 10px;
+    background: transparent; box-shadow: none; cursor: pointer;
+    color: var(--theme-primary);
+    transition: right 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+/* Background/shadow kisi bhi state me nahi (hover, active/open): sirf icon dikhta hai.
+   Keyboard (Tab) se focus par outline rehti hai taake accessibility na tute. */
+.panel-toggle-btn:focus-visible { outline: 2px solid #1e9e89; outline-offset: 2px; }
+
+/* Panel khula ho to button panel ke left edge ke sath chipka rahe (header controls se na takraye) */
+@media (min-width: 901px) {
+    body:has(.document-overlay.side-panel.show) .panel-toggle-btn { right: calc(var(--side-panel-w) + 12px); }
+}
+/* Mobile: panel full width hai, X buttons use hon */
+@media (max-width: 900px) {
+    body:has(.document-overlay.side-panel.show) .panel-toggle-btn { display: none; }
+}
+
+/* Login/Signup buttons ke liye jagah */
+.minimal-top-nav { right: 80px; }
+
+/* ===== Default idle panel: chill robot + "Nothing to Show" talk bubble ===== */
+.idle-brand-panel {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem;
+}
+.idle-scene {
+    display: flex; flex-direction: column; align-items: flex-start;
+    width: min(100%, 420px);
+    pointer-events: none; user-select: none; -webkit-user-select: none;
+}
+.idle-bubble {
+    width: 220px; /* Bubble size control */
+    margin-left: 14px; 
+    margin-bottom: 14px;
+    animation: idleFloat 3.6s ease-in-out infinite;
+    filter: drop-shadow(0 8px 20px rgba(0, 96, 100, 0.12));
+}
+
+.idle-robot { width: 100%; height: auto; display: block; overflow: visible; }
+
+.idle-breath { animation: idleBreath 3.2s ease-in-out infinite; }
+.idle-foot   { animation: idleFoot 2.4s ease-in-out infinite; transform-box: view-box; transform-origin: 279px 163px; }   /* heel: shoe zameen par tikka rehta hai */
+.idle-z text { animation: idleZ 3s ease-in-out infinite; opacity: 0; }
+@keyframes idleFloat  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes idleBreath { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.6px); } }
+@keyframes idleFoot   { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(10deg); } }
+@keyframes idleZ      { 0% { opacity: 0; transform: translateY(8px); } 30%, 65% { opacity: .9; } 100% { opacity: 0; transform: translateY(-8px); } }
+@media (prefers-reduced-motion: reduce) {
+    .idle-bubble, .idle-breath, .idle-foot, .idle-z text { animation: none; }
+    .idle-z text { opacity: .8; }
+}
+
+/* Brand logos sirf display ke liye: click, drag, select aur long-press menu sab band.
+   (Sidebar wala logo button alag hai - wo clickable hi rehta hai.) */
+.brand-logo {
+    pointer-events: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+
+/* ===== Left sidebar: header row (X) + content alignment ===== */
+/* Sisca button: top 25px, 42x42. X usi row me, usi size ka, usi top par. */
+.sidebar-header {
+    position: sticky; top: 0; z-index: 5;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    height: 67px;                       /* 25px top + 42px button */
+    margin: 0 -1.5rem;                  /* sidebar ki poori width */
+    padding: 25px 25px 0 26px;          /* X (30px) ka center sidebar ke bahari kinare se 41px (Sisca button ke center ke barabar): 1px border + 25 + 30/2 */
+    display: flex; align-items: center; justify-content: flex-end;
+    background: rgba(255, 255, 255, 0.98);
+}
+.sidebar .sidebar-close-btn {
+    position: static; top: auto; right: auto;
+    width: 30px; height: 30px; flex: 0 0 30px;
+    font-size: 0.85rem;
+}
+.sidebar .sidebar-close-btn .sidebar-close-icon { display: block; width: 12px; height: 12px; pointer-events: none; }
+/* Hover: right panel ke X jaisa hi: red background + white X + 90deg rotate (center se) */
+.sidebar .sidebar-close-btn:hover {
+    background: #ef4444; color: #fff; transform: rotate(90deg);
+}
+
+/* Right panel ka PDF button: file icon ghoomna theek nahi lagta, to rotate band.
+   Rotate ki jagah thora gehra teal (inline style ko !important se hi override kiya ja sakta hai) */
+#downloadPdfBtn:hover {
+    transform: none;
+    background: rgb(23, 130, 112) !important;
+}
+
+/* Spacing: sections barabar gap me, divider pichkein nahi, aur 720px height me bhi sab fit ho */
+.sidebar { gap: 1.1rem; padding-bottom: 1.5rem; }
+.sidebar > * { flex-shrink: 0; }
+.sidebar .sidebar-divider { margin: 0; }
+.sidebar .auth-section { gap: 0.5rem; }
+
+/* Controls grid: icons ek hi size/box me, taake labels ek line me aayen */
+.sidebar-section .control-grid { gap: 1.25rem 1rem !important; }
+.sidebar-section .control-item {
+    justify-content: flex-start; gap: 0.45rem;
+    padding: 0.3rem 0;
+}
+.sidebar-section .control-grid .control-item i {
+    width: 100%; height: 32px; margin: 0 !important;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem !important; line-height: 1;
+}
+.sidebar-section .control-grid .control-item span {
+    display: block; line-height: 1.2; letter-spacing: 0.06em; text-align: center;
+}
+
+/* Auth / neural sections: sab kuch sidebar ke center me, barabar width */
+.sidebar-section { box-sizing: border-box; }
+.sidebar .auth-profile { margin: 0 auto 0.4rem !important; flex: 0 0 auto; }
+.sidebar .auth-text { margin: 0 0 0.6rem; text-align: center; }
+.sidebar .auth-buttons, .sidebar .auth-panel-actions { padding-top: 0; margin-top: 0 !important; gap: 0.6rem; }
+.sidebar .neural-section { gap: 0.9rem; }
+.sidebar .energy-core-wrapper { margin: 0 auto; flex: 0 0 auto; }
+.sidebar .neural-section .init-btn { margin: 0; width: 100%; box-sizing: border-box; }
+
+
+/* ===== Right panel: drag handle (width resize) ===== */
+.panel-resizer {
+    display: none;
+    position: fixed; top: 0; bottom: 0;
+    right: var(--side-panel-w); width: 14px; margin-right: -7px;
+    z-index: 520; cursor: col-resize; touch-action: none;
+}
+body:has(.document-overlay.side-panel.show) .panel-resizer { display: block; }
+.panel-resizer::before {            /* hamesha dikhne wala chhota grip */
+    content: ""; position: absolute; top: 50%; left: 50%;
+    width: 4px; height: 44px; border-radius: 4px; transform: translate(-50%, -50%);
+    background: rgba(69, 90, 100, 0.28); transition: background 0.2s ease, height 0.2s ease;
+}
+.panel-resizer::after {             /* hover/drag par poori height ki line */
+    content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; transform: translateX(-50%);
+    background: var(--theme-primary); opacity: 0; transition: opacity 0.2s ease;
+}
+.panel-resizer:hover::after, .panel-resizer:focus-visible::after, body.panel-resizing .panel-resizer::after { opacity: 0.55; }
+.panel-resizer:hover::before, .panel-resizer:focus-visible::before, body.panel-resizing .panel-resizer::before { background: var(--theme-primary); height: 60px; }
+.panel-resizer:focus-visible { outline: none; }
+
+/* Drag ke dauran animations band + iframe mouse events na churaye */
+body.panel-resizing { cursor: col-resize; user-select: none; }
+body.panel-resizing iframe { pointer-events: none; }
+body.panel-resizing .centered-layout,
+body.panel-resizing .document-overlay.side-panel,
+body.panel-resizing .panel-toggle-btn { transition: none !important; }
+
+@media (max-width: 900px) {
+    .panel-resizer { display: none !important; }   /* mobile par panel full width hai */
+}
+
+
+/* ===== Visuals toggle: green dot toggle glyph ke andar rahe ===== */
+/* Pehle icon width:100% tha, is liye dot cell ke right edge par chala jata tha */
+.sidebar-section .control-grid #visualsBtn i {
+    width: auto;
+    align-self: center;
+}
+
+/* ===== API Keys page (main screen) - Gemini / Groq / Supabase ===== */
+#apiKeysBtn { position: relative; }
+/* Page khuli ho to tile highlighted (sidebar light hai, is liye teal; safed rang icon ko ghayab kar deta tha) */
+.sidebar-section .control-grid #apiKeysBtn.current span { color: var(--theme-primary); }
+.sidebar-section .control-grid #apiKeysBtn.current i { transform: scale(1.12); }
+#apiKeysBtn.has-keys::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 14px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 2px #fff;
+}
+
+/* Page: chat ki jagah main area me. .centered-layout ke andar hai, isliye sidebar / right panel ke saath khud shift hota hai */
+.keys-page { display: none; width: 100%; height: 100%; overflow-y: auto; box-sizing: border-box; padding-top: 3.5rem; }
+body.keys-page-open .keys-page { display: block; animation: keysPageIn 0.28s ease-out both; }
+body.keys-page-open .centered-layout > .brand-wrapper,
+body.keys-page-open .centered-layout > .chat-section-centered { display: none !important; }
+body.keys-page-open .centered-layout { justify-content: flex-start; }
+.keys-page-inner { max-width: 760px; margin: 0 auto; padding: 0 0.25rem 2rem; }
+.keys-page-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
+.keys-page-head > div { flex: 1 1 280px; min-width: 0; }
+.keys-page-head h1 { white-space: nowrap; margin: 0 0 0.5rem; font-size: 1.9rem; font-weight: 600; color: var(--text-dark); letter-spacing: 0.2px; }
+.keys-page-head h1 i { color: var(--theme-primary); margin-right: 0.5rem; font-size: 1.5rem; }
+.keys-page-head p { margin: 0; max-width: 540px; font-size: 0.9rem; line-height: 1.55; color: var(--theme-secondary); }
+.keys-back-btn {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.55rem 1rem; border: 1px solid var(--glass-border); border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7); color: var(--theme-secondary);
+    font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.keys-back-btn:hover { background: #fff; color: var(--theme-primary); border-color: var(--theme-primary); }
+@keyframes keysPageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { body.keys-page-open .keys-page { animation: none; } }
+
+.keys-section {
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.6);
+}
+.keys-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.3rem; }
+.keys-title { font-weight: 600; font-size: 0.98rem; color: var(--theme-primary); display: flex; align-items: center; gap: 0.35rem; }
+.keys-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--theme-secondary);
+    background: rgba(69, 90, 100, 0.1);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+}
+.keys-count.full { color: #b45309; background: rgba(245, 158, 11, 0.18); }
+.keys-hint { font-size: 0.78rem; color: var(--theme-secondary); margin-bottom: 0.6rem; line-height: 1.4; }
+.keys-hint a { color: var(--theme-primary); font-weight: 600; text-decoration: underline; }
+
+.keys-list { list-style: none; padding: 0; margin: 0 0 0.5rem; }
+.keys-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 10px;
+    background: rgba(69, 90, 100, 0.06);
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
+}
+.keys-item-text { flex: 1; font-family: monospace; color: var(--text-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.keys-del, .keys-test {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--theme-secondary);
+    font-size: 0.85rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 8px;
+    transition: color 0.2s, background 0.2s;
+}
+.keys-test { font-weight: 600; color: var(--theme-primary); }
+.keys-test:hover { background: rgba(0, 96, 100, 0.1); }
+.keys-test:disabled { opacity: 0.5; cursor: wait; }
+.keys-del:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+
+.keys-row { display: flex; gap: 0.5rem; align-items: stretch; }
+.keys-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid rgba(69, 90, 100, 0.2);
+    border-radius: 12px;
+    font-family: monospace;
+    font-size: 0.82rem;
+    resize: none;
+    outline: none;
+    -webkit-text-security: disc;
+    transition: border-color 0.3s;
+}
+.keys-input:focus { border-color: var(--theme-primary); }
+.keys-add {
+    border: none;
+    border-radius: 12px;
+    padding: 0 1.1rem;
+    background: var(--theme-primary);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+}
+.keys-add:hover { background: var(--theme-accent); transform: scale(0.98); }
+.keys-full { margin-bottom: 0; }
+.keys-status { min-height: 1.1rem; margin-top: 0.4rem; font-size: 0.78rem; color: var(--theme-secondary); }
+.keys-status.ok { color: #15803d; }
+.keys-status.err { color: #dc2626; }
+
+.keys-remove-all {
+    width: 100%;
+    margin-top: 0.3rem;
+    padding: 0.7rem;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 12px;
+    background: transparent;
+    color: #dc2626;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.keys-remove-all:hover { background: rgba(239, 68, 68, 0.08); }

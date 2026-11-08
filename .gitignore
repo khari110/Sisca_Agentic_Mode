@@ -1,0 +1,41 @@
+# secrets (never commit)
+api_key.txt
+groq_api_key.txt
+Sisca_email_Pass.txt
+client_secret.json
+database_url.txt
+sisca_users.db
+
+# runtime data
+uploads/*
+!uploads/.gitkeep
+static/outputs/*
+!static/outputs/.gitkeep
+agent_scripts/google_user_profile/
+agent_scripts/agent_run.log
+agent_scripts/.agent_active
+agent_scripts/todo.md
+agent_scripts/data_interpreter_*.py
+
+# python / env
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+
+# more secrets / databases (never commit)
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
+client_secret*.json
+credentials.json
+token.json
+*.pem
+*.key
+*.db
